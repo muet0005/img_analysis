@@ -14,5 +14,5 @@ gbsc.read_subj_list(subj_list)
 
 gbsc.gen_samples(1, 10)
 
-gbsc.gen_melodic_lisa(DIR, mDIR, 'melodic_test')
+gbsc.gen_melodic_lisa(DIR, '_Apr2013.feat', mDIR, 'melodic_test')
 
