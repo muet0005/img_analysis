@@ -15,7 +15,10 @@ fi
 
 rsync -rtvz ${src}/ ${trg}/
 
-melodic --in=${trg}/sample.${sample} --outdir=${trg} --dim=${ndims} --tr=${tr} --approach=concat --nobet --bgthreshold=10
+export FSLDIR=/home/muetzel/software/fsl-4.1.9
+source $FSLDIR/etc/fslconf/fsl.sh
+
+${FSLDIR}/bin/melodic --in=${trg}/sample.${sample} --outdir=${trg} --dim=${ndims} --tr=${tr} --approach=concat --nobet --bgthreshold=10
 
 rsync -rtvz ${trg}/ ${src}/
 
