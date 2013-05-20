@@ -1,6 +1,5 @@
 import os as os
 import gen_bs_samples as gbs
-import holy_fuck as hf
 
 DIR = '/Volumes/mdraid1/mr_data_idc/feb2012_datalock/rfmri'
 
