@@ -17,4 +17,6 @@ featdir_sfix=22May2013.feat
 
 ${FSLDIR}/bin/feat $TMPDIR/rmuetzel/rsfmri/${idc}/idc_${idc}_${featdir_sfix}.fsf
 
+$FSLDIR/bin/flirt -in $TMPDIR/$idc/${idc}_${featdir_sfix}/filtered_func_data -ref $TMPDIR/$idc/${idc}_${featdir_sfix}/reg/standard -out $TMPDIR/$idc/${idc}_${featdir_sfix}/filtered_func_data_2_standard -dof 12 -applyxfm -init $TMPDIR/$idc/${idc}_${featdir_sfix}/reg/example_func2standard.mat
+
 rsync -rtvz $TMPDIR/rmuetzel/rsfmri/${idc}/ /home/genr/data/rsfmri/${idc}/
