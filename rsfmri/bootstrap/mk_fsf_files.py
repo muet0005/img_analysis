@@ -23,16 +23,15 @@ if not featDir or not mni_brain or not subj:
 	print 'python ./mk_fsf_files.py -f featdir -m mni_brain -s subject'
 	sys.exit(0)
 
-fsfSfix = '_Apr25_2013_feat.fsf'
 
 subjs = os.listdir(featDir)
 
 fmrinii_pfix = 'rs-160_idc_'
 
-featdir_sfix = '_Apr2013.feat'
+featdir_sfix = '_22May2013.feat'
 
 tr = 2.0; te = 30; cluster = True
 
-fsfFile = os.path.join(featDir, subj, 'feat.idc.' + str(subj) + '.fsf')
+fsfFile = os.path.join(featDir, subj, 'idc_' + str(subj) + featdir_sfix + '.fsf')
 genFSF = kfmriu.genFSLfsf(fsfFile, featDir, subj, fmrinii_pfix, featdir_sfix, tr, te, mni_brain, cluster)
 genFSF.genPreStatsfsf()
