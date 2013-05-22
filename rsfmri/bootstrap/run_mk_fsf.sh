@@ -8,7 +8,7 @@ fi
 
 rsync -rtvzL /home/genr/data/rsfmri/${idc} $TMPDIR/rmuetzel/rsfmri/
 
-python /home/genr/software/rsfmri/bootstrap/mk_fsf_files.py -f $TMPDIR/rmuetzel/rsfmri -m /home/genr/software/fsl/data/standard/MNI152_T1_2mm_brain.nii.gz -s ${idc}
+python /home/genr/software/bitbucket/lisa/rsfmri/bootstrap/mk_fsf_files.py -f $TMPDIR/rmuetzel/rsfmri -m /home/genr/software/fsl/data/standard/MNI152_T1_2mm_brain.nii.gz -s ${idc}
 
 export FSLDIR=/home/muetzel/software/fsl-4.1.9
 source $FSLDIR/etc/fslconf/fsl.sh
