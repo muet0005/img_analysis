@@ -19,7 +19,7 @@ if [ ! -d $TMPDIR/rmuetzel/tracula/freesurfer ] ; then
 	mkdir -p $TMPDIR/rmuetzel/tracula/freesurfer
 fi
 
-shdir=/home/genr/software/bitbucket/tracula
+shdir=/home/genr/software/bitbucket/lisa/tracula
 tracula_data=${HOME}/data/tracula/5.2
 fs_data=${HOME}/data/freesurfer/5.1
 
