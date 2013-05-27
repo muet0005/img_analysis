@@ -43,7 +43,7 @@ cfg_str = 'set doregmni = 1'
 cfg.write(cfg_str + '\n')
 cfg_str = 'set mnitemp = $FSLDIR/data/standard/MNI152_T1_1mm_brain.nii.gz'
 cfg.write(cfg_str + '\n')
-cfg_str = 'set trainfile = /home/genr/software/tracula/train_lists/trainlist.txt'
+cfg_str = 'set trainfile = /home/genr/software/bitbucket/lisa/tracula/train_lists/trainlist.txt'
 cfg.write(cfg_str + '\n')
 cfg_str = 'set pathlist = (lh.cst_AS rh.cst_AS lh.ilf_AS rh.ilf_AS lh.unc_AS rh.unc_AS fmajor_PP fminor_PP lh.atr_PP rh.atr_PP lh.cab_PP rh.cab_PP lh.ccg_PP rh.ccg_PP lh.slfp_PP rh.slfp_PP lh.slft_PP rh.slft_PP)'
 cfg.write(cfg_str + '\n')

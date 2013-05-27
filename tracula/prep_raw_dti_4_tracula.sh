@@ -1,11 +1,12 @@
 #!/bin/bash
 
-shdir=/home/genr/software/tracula
+shdir=/home/genr/software/bitbucket/lisa/tracula
 
 DIR=$1
 subj=$2
 
-#module load freesurfer/5.1.0
+export FREESURFER_HOME=/home/genr/software/freesurfer/5.2.0
+source ${FREESURFER_HOME}/SetUpFreeSurfer.sh
 
 # First, fix the GE upsampling....
 # The dicom header says the acquisition matrix is 110 x 110, but the nifti output are 256x 256

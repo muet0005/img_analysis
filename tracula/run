@@ -1,0 +1,49 @@
+#!/bin/bash
+
+idc=${1}
+trctype=${2}
+
+if [ ${idc} == "" ] ; then
+	echo "IDC: ${idc} APPEARS TO BE EMPTY....MUST EXIT!"
+	exit
+fi
+if [ ${trctype} == "" ] ; then
+	echo "TRACULA CMD NOT PROVIDED: ${trctype} APPEARS TO BE EMPTY....MUST EXIT!"
+	exit
+fi
+
+if [ ! -d $TMPDIR/rmuetzel/tracula/dti ] ; then
+	mkdir -p $TMPDIR/rmuetzel/tracula/dti
+fi
+if [ ! -d $TMPDIR/rmuetzel/tracula/freesurfer ] ; then
+	mkdir -p $TMPDIR/rmuetzel/tracula/freesurfer
+fi
+
+shdir=/home/genr/software/bitbucket/tracula
+tracula_data=${HOME}/data/tracula/5.2
+fs_data=${HOME}/data/freesurfer/5.1
+
+echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
+echo "rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/"
+echo "rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/"
+echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
+
+rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/
+rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
+
+if [ "$trctype" == "prep" ] ; then
+	${shdir}/prep_raw_dti_4_tracula.sh $TMPDIR/rmuetzel/tracula/dti ${idc}
+fi
+
+python ${shdir}/mk_tracula_cfg.py $TMPDIR/rmuetzel/tracula/freesurfer $TMPDIR/rmuetzel/tracula/dti ${idc} $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg
+
+export FSLDIR=/home/muetzel/software/fsl-4.1.9
+source $FSLDIR/etc/fslconf/fsl.sh
+export SUBJECTS_DIR=$TMPDIR/rmuetzel/tracula/freesurfer
+
+export FREESURFER_HOME=/home/genr/software/freesurfer/5.2.0
+source ${FREESURFER_HOME}/SetUpFreeSurfer.sh
+
+${shdir}/trac-all-rlm.5.2 -c $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg -${trctype}
+
+rsync -rtvzL $TMPDIR/rmuetzel/tracula/dti/${idc}/ ${tracula_data}/${idc}/
