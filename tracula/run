@@ -23,10 +23,19 @@ shdir=/home/genr/software/bitbucket/lisa/tracula
 tracula_data=${HOME}/data/tracula/5.2
 fs_data=${HOME}/data/freesurfer/5.1
 
+if [ "$trctype" == "bedp" ] ; then
+	if [ ! -e ${tracula_data}/${idc}/dmri/data.nii.gz ] ; then
+		cp ${tracula_data}/${idc}/dmri/dwi.nii.gz ${tracula_data}/${idc}/dmri/data.nii.gz
+	fi
+	if [ ! -e ${tracula_data}/${idc}/dmri/nodif_brain_mask.nii.gz ] ; then
+		cp ${tracula_data}/${idc}/dlabel/diff/aparc+aseg_mask.bbr.nii.gz ${tracula_data}/${idc}/dmri/nodif_brain_mask.nii.gz
+	fi
+
 echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
 echo "rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/"
 echo "rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/"
 echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
+
 
 rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/
 rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
