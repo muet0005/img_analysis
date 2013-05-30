@@ -46,4 +46,4 @@ source ${FREESURFER_HOME}/SetUpFreeSurfer.sh
 
 ${shdir}/trac-all-rlm.5.2 -c $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg -${trctype}
 
-cp -ruv $TMPDIR/rmuetzel/tracula/dti/${idc}/ ${tracula_data}/
+cp -ruvL $TMPDIR/rmuetzel/tracula/dti/${idc}/ ${tracula_data}/
