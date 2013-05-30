@@ -30,6 +30,8 @@ if [ "$trctype" == "bedp" ] ; then
 	if [ ! -e ${tracula_data}/${idc}/dmri/nodif_brain_mask.nii.gz ] ; then
 		cp ${tracula_data}/${idc}/dlabel/diff/aparc+aseg_mask.bbr.nii.gz ${tracula_data}/${idc}/dmri/nodif_brain_mask.nii.gz
 	fi
+fi
+
 
 echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
 echo "rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/"
