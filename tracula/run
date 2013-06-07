@@ -40,8 +40,9 @@ echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
 
 
 rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/
-rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
-
+if [ "$trctype" == "prep" ] ; then
+	rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
+fi
 if [ "$trctype" == "prep" ] ; then
 	${shdir}/prep_raw_dti_4_tracula.sh $TMPDIR/rmuetzel/tracula/dti ${idc}
 fi
