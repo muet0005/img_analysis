@@ -2,7 +2,7 @@
 
 sample=${1}
 
-sample_sfix=melodic_test
+sample_sfix=melodic_test_dim20
 ndims=20
 tr=2.0
 
