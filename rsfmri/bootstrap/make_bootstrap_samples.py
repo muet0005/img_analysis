@@ -13,5 +13,5 @@ gbs.read_subj_list(subj_list)
 
 gbs.gen_samples(10, 35)
 
-gbs.gen_melodic_lisa(DIR, '_22May2013.feat', mDIR, 'melodic_test')
+gbs.gen_melodic_lisa(DIR, '_22May2013.feat', mDIR, 'melodic_test_dim20')
 
