@@ -3,7 +3,7 @@
 sample=${1}
 
 sample_sfix=melodic_test
-ndims=16
+ndims=20
 tr=2.0
 
 src=${HOME}/data/rsfmri/melodic_bootstrap_test/sample.${sample}.${sample_sfix}

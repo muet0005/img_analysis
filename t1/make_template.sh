@@ -176,7 +176,7 @@ if [ ! -e $oDIR/templates/knicr166_all_nonlin2_t1_1mm_brain.nii.gz ] ; then
 	${FSLDIR}/bin/fslmerge -t $oDIR/templates/knicr166_all_nonlin2_t1_1mm_brain t1_idc_*_2_knicr166_nonlin1_t1_1mm_brain_nonlin2.nii.gz
 fi
 
-if [ ! -e $oDIR/templates/knicr166_nonlin2_t1_1mm_brain.nii.gz ] ; then 
+if [ ! -e $oDIR/templates/knicr166_nonlin2_t1_1mm_brain.nii.gz  ] ; then 
 	cd $oDIR/nonlin2
 	${FSLDIR}/bin/fslmaths $oDIR/templates/knicr166_all_nonlin2_t1_1mm_brain -Tmean $oDIR/templates/knicr166_nonlin2_t1_1mm_brain
 fi		
