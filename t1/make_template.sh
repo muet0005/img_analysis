@@ -18,7 +18,7 @@ if [ ! -d $oDIR ] ; then
 	mkdir $oDIR
 fi
 
-for reg in fast lin1 lin2 nonlin1 nonlin2 ; do
+for reg in fast lin1 lin2 nonlin1 nonlin2 nonlin3 ; do
 	if [ ! -d $oDIR/${reg} ] ; then
 		mkdir $oDIR/${reg}
 	fi
@@ -27,7 +27,7 @@ done
 
 ##do the initial 6dof reg
 for idc in ${idcs[*]} ; do
-	echo $idc
+	echo $idc "linear 6dof"
 	if [ ! -e $oDIR/lin1/t1_idc_${idc}_2_MNI152_T1_1mm_6dof.nii.gz -a ! -e $oDIR/lin1/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning ] ; then
 		#touch an isrunning so you can run on multiple cores..
 		touch $oDIR/lin1/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning
@@ -96,7 +96,7 @@ fi
 
 #begin the 2nd linear reg step....this time use 12dof
 for idc in ${idcs[*]} ; do
-	echo $idc
+	echo $idc "linear 12dof"
 	if [ ! -e $oDIR/lin2/t1_idc_${idc}_2_knicr166_lin1_t1_1mm_brain_12dof.nii.gz  -a ! -e $oDIR/lin1/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning ] ; then
 		touch $oDIR/lin1/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning
 		echo "lin2 12dof reg"
@@ -136,7 +136,7 @@ fi
 #begin the first iteration of nonlinear warps to the 12dof aligned knicr brain
 #use the previous 12dof xfm to initialize it
 for idc in ${idcs[*]} ; do
-	echo $idc
+	echo $idc "nonlinear 1"
 	if [ ! -e $oDIR/nonlin1/t1_idc_${idc}_2_knicr166_lin2_t1_1mm_brain_nonlin1.nii.gz  -a ! -e $oDIR/nonlin1/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning ] ; then
 		touch $oDIR/nonlin1/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning
 		$FSLDIR/bin/fnirt --in=$oDIR/fast/t1_idc_${idc}_1mm_brain_restore --ref=$oDIR/templates/knicr166_lin2_t1_1mm_brain_12dof --aff=$oDIR/lin2/t1_idc_${idc}_2_knicr166_lin1_t1_1mm_brain_12dof.mat --cout=$oDIR/nonlin1/t1_idc_${idc}_2_knicr166_lin2_t1_1mm_brain_nonlin1_cout --iout=$oDIR/nonlin1/t1_idc_${idc}_2_knicr166_lin2_t1_1mm_brain_nonlin1 --logout=$oDIR/nonlin1/t1_idc_${idc}_2_knicr166_lin2_t1_1mm_brain_nonlin1.log
@@ -160,7 +160,7 @@ fi
 #begin the second iteration of nonlinear warps...this time to the first nonlin1 aligned knicr brain
 #use the previous 12dof xfm to initialize it
 for idc in ${idcs[*]} ; do
-	echo $idc
+	echo $idc "nonlinear2"
 	if [ ! -e $oDIR/nonlin2/t1_idc_${idc}_2_knicr166_nonlin1_t1_1mm_brain_nonlin2.nii.gz  -a ! -e $oDIR/nonlin2/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning ] ; then
 		touch $oDIR/nonlin2/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning
 		$FSLDIR/bin/fnirt --in=$oDIR/fast/t1_idc_${idc}_1mm_brain_restore --ref=$oDIR/templates/knicr166_nonlin1_t1_1mm_brain --aff=$oDIR/lin2/t1_idc_${idc}_2_knicr166_lin1_t1_1mm_brain_12dof.mat --cout=$oDIR/nonlin2/t1_idc_${idc}_2_knicr166_nonlin1_t1_1mm_brain_nonlin2_cout --iout=$oDIR/nonlin2/t1_idc_${idc}_2_knicr166_nonlin1_t1_1mm_brain_nonlin2 --logout=$oDIR/nonlin2/t1_idc_${idc}_2_knicr166_nonlin1_t1_1mm_brain_nonlin2.log
@@ -180,4 +180,28 @@ if [ ! -e $oDIR/templates/knicr166_nonlin2_t1_1mm_brain.nii.gz  ] ; then
 	cd $oDIR/nonlin2
 	${FSLDIR}/bin/fslmaths $oDIR/templates/knicr166_all_nonlin2_t1_1mm_brain -Tmean $oDIR/templates/knicr166_nonlin2_t1_1mm_brain
 fi		
-		
+
+
+
+#begin the third iteration of nonlinear warps...this time to the second nonlin2 aligned knicr brain
+#use the previous 12dof xfm to initialize it
+for idc in ${idcs[*]} ; do
+	echo $idc "nonlinear3"
+	if [ ! -e $oDIR/nonlin3/t1_idc_${idc}_2_knicr166_nonlin2_t1_1mm_brain_nonlin3.nii.gz  -a ! -e $oDIR/nonlin3/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning ] ; then
+		touch $oDIR/nonlin3/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning
+		$FSLDIR/bin/fnirt --in=$oDIR/fast/t1_idc_${idc}_1mm_brain_restore --ref=$oDIR/templates/knicr166_nonlin2_t1_1mm_brain --aff=$oDIR/lin2/t1_idc_${idc}_2_knicr166_lin1_t1_1mm_brain_12dof.mat --cout=$oDIR/nonlin3/t1_idc_${idc}_2_knicr166_nonlin2_t1_1mm_brain_nonlin3_cout --iout=$oDIR/nonlin3/t1_idc_${idc}_2_knicr166_nonlin2_t1_1mm_brain_nonlin3 --logout=$oDIR/nonlin3/t1_idc_${idc}_2_knicr166_nonlin2_t1_1mm_brain_nonlin3.log
+		rm $oDIR/nonlin3/t1_idc_${idc}_2_MNI152_T1_1mm.isrunning
+	fi
+done
+
+
+#make the third nonlinear average
+if [ ! -e $oDIR/templates/knicr166_all_nonlin3_t1_1mm_brain.nii.gz ] ; then 
+	cd $oDIR/nonlin3
+	${FSLDIR}/bin/fslmerge -t $oDIR/templates/knicr166_all_nonlin3_t1_1mm_brain t1_idc_*_2_knicr166_nonlin2_t1_1mm_brain_nonlin3.nii.gz
+fi
+
+if [ ! -e $oDIR/templates/knicr166_nonlin3_t1_1mm_brain.nii.gz  ] ; then 
+	cd $oDIR/nonlin3
+	${FSLDIR}/bin/fslmaths $oDIR/templates/knicr166_all_nonlin3_t1_1mm_brain -Tmean $oDIR/templates/knicr166_nonlin3_t1_1mm_brain
+fi	

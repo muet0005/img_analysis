@@ -2,16 +2,21 @@
 
 idc=${1}
 
-if [ ! -d $TMPDIR/rmuetzel/rsfmri ] ; then
-	mkdir -p $TMPDIR/rmuetzel/rsfmri
-fi
+export FSLDIR=/home/genr/software/fsl/5.0.4
+source $FSLDIR/etc/fslconf/fsl.sh
+export PATH=${PATH}:${FSLDIR}/bin
+
+for i in t1 rsfmri ; do
+	if [ ! -d $TMPDIR/rmuetzel/rsfmri ] ; then
+		mkdir -p $TMPDIR/rmuetzel/${i}
+	fi
+done
+
+outdir_sfix = '_27July2013.feat'
 
 rsync -rtvzL /home/genr/data/rsfmri/${idc} $TMPDIR/rmuetzel/rsfmri/
 
-python /home/genr/software/bitbucket/lisa/rsfmri/bootstrap/mk_fsf_files.py -f $TMPDIR/rmuetzel/rsfmri -m /home/genr/software/fsl/data/standard/MNI152_T1_2mm_brain.nii.gz -s ${idc}
-
-export FSLDIR=/home/muetzel/software/fsl-4.1.9
-source $FSLDIR/etc/fslconf/fsl.sh
+python /home/genr/software/bitbucket/lisa/rsfmri/bootstrap/mk_fsf_files.py -f $TMPDIR/rmuetzel/rsfmri -m ${FSLDIR}/data/knicr166_T1_1mm_brain.nii.gz -s ${idc} -o outdir_sfix -t1 $TMPDIR/${idc}/t1_idc_${idc}_0.9mm.nii.gz
 
 featdir_sfix=22May2013.feat
 
