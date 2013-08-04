@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser(description='Generate FSF files for FEAT analys
 parser.add_argument("-f", "--feat_dir", help="Location of all subjects' feat folders", required=True, nargs=1)
 parser.add_argument("-m", "--standard_brain", help="Path to brain in standard space.", required=True, nargs=1)
 parser.add_argument("-s", "--subject", help="subject id number within the feat_dir",  required=True, nargs=1)
-parser.add_argument("-o", "--outdir", help="The name of the output folder that will go in feat_dir/subject/", required=False, nargs=1)
+parser.add_argument("-o", "--outdir", help="The name of the output folder that will go in feat_dir/subject/", required=True, nargs=1)
 parser.add_argument("--t1", help="T1-weighted structural scan", required=False, nargs=1)
 parser.add_argument("--niiPfix", help="prefix of the nifti image to be analyzed", required=False, nargs=1)
 parser.add_argument("--niiSfix", help="suffix of the nifti image to be analyzed", required=False, nargs=1)
@@ -25,10 +25,8 @@ args = parser.parse_args()
 feat_dir = args.feat_dir[0]
 subject = args.subject[0]
 standard_brain = args.standard_brain[0]
-if args.outdir:
-	outdir_sfix = args.outdir[0]
-else:
-	outdir_sfix = 'outdir'
+outdir_sfix = args.outdir[0]
+
 t1 = False
 
 #check if this is the genr setup...if so, give it the default nomenclature
