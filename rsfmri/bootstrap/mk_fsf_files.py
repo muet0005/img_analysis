@@ -37,7 +37,8 @@ if args.genr:
 	fmrinii = os.path.join(feat_dir, subject, fmrinii_pfix + str(subject) + '.nii.gz')
 	fsfFile = os.path.join(feat_dir, subject, 'idc_' + str(subject) + outdir_sfix + '.fsf')
 	if args.t1:
-		t1 = args.t1
+		t1 = args.t1[0]
+		
 #check if luciana setup is specified...give the default nomenclature
 elif args.luciana:
 	print 'set up the luciana stuff here'
