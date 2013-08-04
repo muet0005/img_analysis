@@ -17,6 +17,7 @@ parser.add_argument("--niiSfix", help="suffix of the nifti image to be analyzed"
 parser.add_argument("--genr", help="assume the outdir, nifti pfix and sfix are ordered in a certain way", required=False, action="store_true")
 parser.add_argument("--luciana", help="assume the outdir, nifti pfix and sfix are ordered in a certain way", required=False, action="store_true")
 parser.add_argument("--scan_id", help="if both a subject and scan session ID number is assigned, this is the scan-specific id", required=False, nargs=1)
+parser.add_argument("--config", help="specify a configuration file with various feat parameters.", required=False, nargs=1)
 #parse the args
 args = parser.parse_args()
 
@@ -45,14 +46,18 @@ else:
 	fmrinii_pfix = 'resting_state_'
 	outdir = os.path.join(feat_dir, subject, 'idc_' + str(subject) + outdir_sfix)
 	fmrinii = os.path.join(feat_dir, subject, fmrinii_pfix + str(subject) + '.nii.gz')
-	fsfFile = os.path.join(feat_dir, subject, str(subject) + featdir_sfix + '.fsf')
+	fsfFile = os.path.join(feat_dir, subject, 'idc_' + str(subject) + outdir_sfix + '.fsf')
+
+config = False
+if args.config:
+	config = args.config
 		
 print "output directory = ", outdir
 print "fmri nifti input = ", fmrinii
 print "fsf file = ", fsfFile
 
 #first intialize the class
-genFSF = kfmriu.genFSLfsf(fsfFile, fmrinii, outdir, standard_brain, highresniis=t1)
+genFSF = kfmriu.genFSLfsf(fsfFile, fmrinii, outdir, standard_brain, highresniis=t1, config=config)
 #run the function to make compute the number of TRs
 nvols = genFSF.calc_nvols()
 #make the fsf file
