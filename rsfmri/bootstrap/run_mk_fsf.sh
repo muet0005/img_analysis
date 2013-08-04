@@ -22,6 +22,6 @@ python /home/genr/software/bitbucket/lisa/rsfmri/bootstrap/mk_fsf_files.py -f $T
 
 ${FSLDIR}/bin/feat $TMPDIR/rmuetzel/rsfmri/${idc}/idc_${idc}_${outdir_sfix}.fsf
 
-$FSLDIR/bin/flirt -in $TMPDIR/rmuetzel/rsfmri/$idc/${idc}_${outdir_sfix}/filtered_func_data -ref $TMPDIR/rmuetzel/rsfmri/$idc/${idc}_${outdir_sfix}/reg/standard -out $TMPDIR/rmuetzel/rsfmri/$idc/${idc}_${outdir_sfix}/filtered_func_data_2_standard -dof 12 -applyxfm -init $TMPDIR/rmuetzel/rsfmri/$idc/${idc}_${outdir_sfix}/reg/example_func2standard.mat
+$FSLDIR/bin/flirt -in $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/filtered_func_data -ref $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/reg/standard -out $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/filtered_func_data_2_standard -dof 12 -applyxfm -init $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/reg/example_func2standard.mat
 
 rsync -rtvz $TMPDIR/rmuetzel/rsfmri/${idc}/ /home/genr/data/rsfmri/${idc}/
