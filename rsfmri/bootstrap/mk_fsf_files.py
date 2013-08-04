@@ -60,6 +60,6 @@ print "fsf file = ", fsfFile
 #first intialize the class
 genFSF = kfmriu.genFSLfsf(fsfFile, fmrinii, outdir, standard_brain, highresniis=t1, config=config)
 #run the function to make compute the number of TRs
-nvols = genFSF.calc_nvols()
+nvols = kfmriu.calc_nvols(fmrinii)
 #make the fsf file
 genFSF.genFeatfsf()
