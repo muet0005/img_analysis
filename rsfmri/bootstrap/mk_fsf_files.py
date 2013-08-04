@@ -25,7 +25,10 @@ args = parser.parse_args()
 feat_dir = args.feat_dir[0]
 subject = args.subject[0]
 standard_brain = args.standard_brain[0]
-outdir_sfix = args.outdir[0]
+if args.outdir:
+	outdir_sfix = args.outdir[0]
+else:
+	outdir_sfix = 'outdir'
 t1 = False
 
 #check if this is the genr setup...if so, give it the default nomenclature
@@ -34,7 +37,7 @@ if args.genr:
 	fmrinii_pfix = 'rs-160_idc_'
 	outdir = os.path.join(feat_dir, subject, 'idc_' + str(subject) + outdir_sfix)
 	fmrinii = os.path.join(feat_dir, subject, fmrinii_pfix + str(subject) + '.nii.gz')
-	fsfFile = os.path.join(feat_dir, subject, 'idc_' + str(subject) + featdir_sfix + '.fsf')
+	fsfFile = os.path.join(feat_dir, subject, 'idc_' + str(subject) + outdir_sfix + '.fsf')
 	if args.t1:
 		t1 = args.t1
 #check if luciana setup is specified...give the default nomenclature
@@ -50,7 +53,7 @@ else:
 
 config = False
 if args.config:
-	config = args.config
+	config = args.config[0]
 		
 print "output directory = ", outdir
 print "fmri nifti input = ", fmrinii
