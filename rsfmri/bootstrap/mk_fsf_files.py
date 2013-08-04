@@ -25,7 +25,7 @@ args = parser.parse_args()
 feat_dir = args.feat_dir[0]
 subject = args.subject[0]
 standard_brain = args.standard_brain[0]
-outdir_sfix = args.outdir[0]
+outdir_sfix = str('_') + args.outdir[0]
 
 t1 = False
 

@@ -12,7 +12,7 @@ for i in t1 rsfmri ; do
 	fi
 done
 
-outdir_sfix='_27July2013.feat'
+outdir_sfix='27July2013.feat'
 config=/home/genr/software/bitbucket/lisa/rsfmri/bootstrap/default.feat.cfg
 
 rsync -rtvzL /home/genr/data/rsfmri/${idc} $TMPDIR/rmuetzel/rsfmri/
