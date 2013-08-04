@@ -62,4 +62,4 @@ genFSF = kfmriu.genFSLfsf(fsfFile, fmrinii, outdir, standard_brain, highresniis=
 #run the function to make compute the number of TRs
 nvols = kfmriu.calc_nvols(fmrinii)
 #make the fsf file
-genFSF.genFeatfsf()
+genFSF.genFeatfsf(nvols)
