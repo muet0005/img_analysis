@@ -17,6 +17,7 @@ config=/home/genr/software/bitbucket/lisa/rsfmri/bootstrap/default.feat.cfg
 
 rsync -rtvzL /home/genr/data/rsfmri/${idc} $TMPDIR/rmuetzel/rsfmri/
 rsync -rtvzL /home/genr/data/t1/${idc}/t1_idc_${idc}_0.9mm.nii.gz $TMPDIR/rmuetzel/t1/
+rsync -rtvzL /home/genr/data/t1/${idc}/t1_idc_${idc}_0.9mm_brain.nii.gz $TMPDIR/rmuetzel/t1/
 
 python /home/genr/software/bitbucket/lisa/rsfmri/bootstrap/mk_fsf_files.py -f $TMPDIR/rmuetzel/rsfmri -m ${FSLDIR}/data/standard/knicr166_T1_2mm_brain.nii.gz -s ${idc} -o ${outdir_sfix} --t1 $TMPDIR/rmuetzel/t1/t1_idc_${idc}_0.9mm.nii.gz --config ${config} --genr
 
