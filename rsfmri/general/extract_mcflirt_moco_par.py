@@ -34,7 +34,8 @@ excl_dict = {}
 
 mcDir = os.path.join(feat_dir, 'mc')
 if not os.path.isdir(mcDir):
-	continue
+	print 'No_Feat_DIR'
+	sys.exit(0)
 parFile = open(os.path.join(mcDir, 'prefiltered_func_data_mcf.par'), 'r')
 csv_parFile = csv.reader(parFile, delimiter=' ')
 data_list = []
