@@ -25,9 +25,6 @@ else:
 	maxrot = 3
 feat_dir = args.feat_dir[0]
 
-print "Maximum translation: ", maxtra
-print "Maximum rotation: ", maxrot
-
 par = 6
 
 excl_dict = {}
