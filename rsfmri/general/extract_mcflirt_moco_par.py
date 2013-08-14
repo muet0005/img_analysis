@@ -16,11 +16,11 @@ parser.add_argument("--maxrot", help="maximum amount of rotation (in degrees)", 
 args = parser.parse_args()
 
 if args.maxtra:
-	maxtra = args.maxtra[0]
+	maxtra = float(args.maxtra[0])
 else:
 	maxtra = 3
 if args.maxrot:
-	maxrot = args.maxrot[0]
+	maxrot = float(args.maxrot[0])
 else:
 	maxrot = 3
 feat_dir = args.feat_dir[0]
@@ -54,28 +54,29 @@ mc_pars = np.zeros(shape=(trs, par))
 for i in range(0, len(data_list)):
 	for j in range(0, 6):
 		mc_pars[i] = data_list[i]
-if math.degrees(np.max(mc_pars[:,0])) > maxrot:
+if math.degrees(np.max(np.abs(mc_pars[:,0]))) > maxrot:
 	if not excl_dict.has_key(feat_dir):
 		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,0])), 'xrot']
-if math.degrees(np.max(mc_pars[:,1])) > maxrot:
+if math.degrees(np.max(np.abs(mc_pars[:,1]))) > maxrot:
 	if not excl_dict.has_key(feat_dir):
 		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,1])), 'yrot']
-if math.degrees(np.max(mc_pars[:,2])) > maxrot:
+if math.degrees(np.max(np.abs(mc_pars[:,2]))) > maxrot:
 	if not excl_dict.has_key(feat_dir):
 		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,2])), 'zrot']
-if np.max(mc_pars[:,3]) > maxtra:
+if np.max(np.abs(mc_pars[:,3])) > maxtra:
 	if not excl_dict.has_key(feat_dir):
 		excl_dict[feat_dir] = [np.max(mc_pars[:,3]), 'xtrans']
-if np.max(mc_pars[:,4]) > maxtra:
+if np.max(np.abs(mc_pars[:,4])) > maxtra:
 	if not excl_dict.has_key(feat_dir):
 		excl_dict[feat_dir] = [np.max(mc_pars[:,4]), 'ytrans']
-if np.max(mc_pars[:,5]) > maxtra:
+if np.max(np.abs(mc_pars[:,5])) > maxtra:
 	if not excl_dict.has_key(feat_dir):
 		excl_dict[feat_dir] = [np.max(mc_pars[:,5]), 'ytrans']		
 
 if excl_dict.has_key(feat_dir):
 	print True
-			
+else:
+	print False			
 #print 'Max X rotation (rad, deg): ', np.max(mc_pars[:,0]), math.degrees(np.max(mc_pars[:,0]))
 #print 'Max Y rotation (rad, deg): ', np.max(mc_pars[:,1]), math.degrees(np.max(mc_pars[:,1]))
 #print 'Max Z rotation (rad, deg): ', np.max(mc_pars[:,2]), math.degrees(np.max(mc_pars[:,2]))
