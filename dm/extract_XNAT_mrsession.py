@@ -2,8 +2,8 @@ import os as os
 import csv as csv
 import copy as copy 
 
-xnatFile = open('/Users/rmuetzel/Downloads/rmuetzel_7_13_2013_12_35_14.csv', 'r')
-oFile = open('/Users/rmuetzel/Downloads/rmuetzel_7_13_2013_12_35_14_FORMATTED.csv', 'w')
+xnatFile = open('/Users/rmuetzel/Desktop/GenR_F9_MRI_sept_2013.csv', 'r')
+oFile = open('/Users/rmuetzel/Desktop/GenR_F9_MRI_sept_09_2013_FORMATTED.csv', 'w')
 
 csv_reader = csv.reader(xnatFile, delimiter=',')
 
@@ -37,10 +37,10 @@ for line in xnat_mrsession_data:
 				seq = seq.replace('(1)', '').replace('(2)', '').replace('(3)', '')
 				if not seq_dict.has_key(seq):
 					seq_dict[seq] = 0
-print 'Sequence diction: '
+print 'Sequence dictionary: '
 print seq_dict
 
-print 'population r-dictionary with sequence information...'
+print 'populating r-dictionary with sequence information...'
 for line in xnat_mrsession_data:
 	if not line[0] == 'MR ID':
 		r = line[0]
