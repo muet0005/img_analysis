@@ -4,7 +4,7 @@ import knicr.fmri.fmri_utils as kfmri
 DIR = '/home/genr/data/rsfmri'
 
 nSubs = 40
-nSamples = 10
+nSamples = 20
 startSample = 10
 
 mDIR = os.path.join(DIR, 'melodic_component_matching_d16')
