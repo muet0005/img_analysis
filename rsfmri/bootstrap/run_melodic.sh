@@ -2,12 +2,13 @@
 
 sample=${1}
 
-sample_sfix=d16
-ndims=16
+dirname=melodic_component_matching_d20
+sample_sfix=d20
+ndims=20
 tr=2.0
 
-src=${HOME}/data/rsfmri/melodic_melodic_component_matching_d16/sample.${sample}.${sample_sfix}
-trg=${TMPDIR}/rmuetzel/rsfmri/melodic_melodic_component_matching_d16/sample.${sample}.${sample_sfix}
+src=${HOME}/data/rsfmri/${dirname}/sample.${sample}.${sample_sfix}
+trg=${TMPDIR}/rmuetzel/rsfmri/${dirname}/sample.${sample}.${sample_sfix}
 
 if [ ! -d $trg ] ; then
 	mkdir -p $trg
