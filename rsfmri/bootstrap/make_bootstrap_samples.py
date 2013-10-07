@@ -6,7 +6,7 @@ DIR = '/home/genr/data/rsfmri'
 nSubs = 40
 nSamples = 100
 startSample = 0
-dirname = 'melodic_samples_d16_initial '
+dirname = 'melodic_samples_d16_initial'
 
 mDIR = os.path.join(DIR, dirname)
 
