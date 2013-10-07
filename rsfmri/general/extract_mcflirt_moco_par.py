@@ -1,4 +1,5 @@
 import os as os
+import sys as sys
 import csv as csv
 import numpy as np
 import math as math
@@ -51,24 +52,34 @@ mc_pars = np.zeros(shape=(trs, par))
 for i in range(0, len(data_list)):
 	for j in range(0, 6):
 		mc_pars[i] = data_list[i]
-if math.degrees(np.max(np.abs(mc_pars[:,0]))) > maxrot:
-	if not excl_dict.has_key(feat_dir):
-		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,0])), 'xrot']
-if math.degrees(np.max(np.abs(mc_pars[:,1]))) > maxrot:
-	if not excl_dict.has_key(feat_dir):
-		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,1])), 'yrot']
-if math.degrees(np.max(np.abs(mc_pars[:,2]))) > maxrot:
-	if not excl_dict.has_key(feat_dir):
-		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,2])), 'zrot']
-if np.max(np.abs(mc_pars[:,3])) > maxtra:
-	if not excl_dict.has_key(feat_dir):
-		excl_dict[feat_dir] = [np.max(mc_pars[:,3]), 'xtrans']
-if np.max(np.abs(mc_pars[:,4])) > maxtra:
-	if not excl_dict.has_key(feat_dir):
-		excl_dict[feat_dir] = [np.max(mc_pars[:,4]), 'ytrans']
-if np.max(np.abs(mc_pars[:,5])) > maxtra:
-	if not excl_dict.has_key(feat_dir):
-		excl_dict[feat_dir] = [np.max(mc_pars[:,5]), 'ytrans']		
+		
+for i in range(0, trs):
+	x,y,z = mc_pars[i][3],mc_pars[i][4],mc_pars[i][5]
+	d = np.sqrt((x**2) + (y**2) + (z**2))
+	if d > maxtra:
+		if excl_dict.has_key(feat_dir):
+			excl_dict[feat_dir].append(d)
+		else:
+			excl_dict[feat_dir] = [d]
+
+#if math.degrees(np.max(np.abs(mc_pars[:,0]))) > maxrot:
+#	if not excl_dict.has_key(feat_dir):
+#		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,0])), 'xrot']
+#if math.degrees(np.max(np.abs(mc_pars[:,1]))) > maxrot:
+#	if not excl_dict.has_key(feat_dir):
+#		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,1])), 'yrot']
+#if math.degrees(np.max(np.abs(mc_pars[:,2]))) > maxrot:
+#	if not excl_dict.has_key(feat_dir):
+#		excl_dict[feat_dir] = [math.degrees(np.max(mc_pars[:,2])), 'zrot']
+#if np.max(np.abs(mc_pars[:,3])) > maxtra:
+#	if not excl_dict.has_key(feat_dir):
+#		excl_dict[feat_dir] = [np.max(mc_pars[:,3]), 'xtrans']
+#if np.max(np.abs(mc_pars[:,4])) > maxtra:
+#	if not excl_dict.has_key(feat_dir):
+#		excl_dict[feat_dir] = [np.max(mc_pars[:,4]), 'ytrans']
+#if np.max(np.abs(mc_pars[:,5])) > maxtra:
+#	if not excl_dict.has_key(feat_dir):
+#		excl_dict[feat_dir] = [np.max(mc_pars[:,5]), 'ytrans']		
 
 if excl_dict.has_key(feat_dir):
 	print True
