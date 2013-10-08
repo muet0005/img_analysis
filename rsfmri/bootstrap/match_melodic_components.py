@@ -5,6 +5,7 @@ from scipy import spatial as sp
 from scipy.spatial.distance import rogerstanimoto
 from scipy.stats.stats import pearsonr as pr
 
+#adding a comment here
 DIR = '/Users/rmuetzel/data/genr/imaging/melodic/melodic_bootstrap_test'
 oDIR = os.path.join(DIR, 'matched')
 
