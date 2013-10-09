@@ -1,9 +1,10 @@
 import os as os
 import nibabel as nb
 import numpy as np
-from scipy import spatial as sp
-from scipy.spatial.distance import rogerstanimoto
-from scipy.stats.stats import pearsonr as pr
+#from scipy import spatial as sp
+#from scipy.spatial.distance import rogerstanimoto
+#from scipy.stats.stats import pearsonr as pr
+import scipy.stats.stats as spstat
 
 #specify the inputs
 DIR = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_samples_d16_initial'
@@ -60,15 +61,17 @@ def compute_ui(trg_map, src_map):
 			#scc[c_trg, c_src] = pr(trg_data[:,:,:,c_trg].ravel(), src_data[:,:,:,c_src].ravel())[0]
 			#tdis[c_trg, c_src] = rogerstanimoto(trg_mask_pos.ravel(), src_mask_pos.ravel())
 	#make an empty matrix to store the matches
-	matched_components = np.zeros([16,16])
+	matched_components = np.zeros(trg_data.shape[3])
 	#now iterate through each target component, and find the max U/I...this is your match
 	for i in range(0, trg_data.shape[3]):
 		#print 'Target component: ',  i, ' Source Component: ', np.argmax(ui[i]), np.argmax(scc[i]), np.argmin(tdis[i]), np.max(ui[i]), np.max(scc[i]), np.min(tdis[i])
 		print 'Target component: ',  i, ' Source Component: ', np.argmax(ui[i]), np.max(ui[i])
-        matched_components[i][np.argmax(ui[i])] += 1
+        matched_components[i] = [np.argmax(ui[i])]
 		#matched_components[i][np.argmax(scc[i])] += 1
 		#matched_components[i][np.argmax(tdis[i])] += 1
-	return matched_components
+	mode = spstat.mode(matched_components)
+	print 'Selected component:',  mode
+	return mode
 
 
 
