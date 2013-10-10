@@ -11,17 +11,19 @@ nsamples = 100
 for template in templates:
 	fList = []
 	for s in range(0, nsamples):
-		if s > 10:
+		if s < 10:
 			s_str = '000' + str(s)
-		elif s > 100:
+		elif s < 100:
 			s_str = '00' + str(s)
-		elif s > 1000:
+		elif s < 1000:
 			s_str = '0' + str(s)
 		else:
 			s_str = str(s)
 		f = os.path.join(DIR, template + '_' + s_str + '.nii.gz')
+		print f
 		if os.path.exists(f):
 			fList.append(f)
-	oFile = os.path.join(DIR, 'merged', template + '_merged.nii.gz')	
+	oFile = os.path.join(DIR, 'merged', template + '_merged.nii.gz')
+	print fList
 	fslmerge = fsl.Merge(dimension='t', terminal_output='stream',in_files=fList, merged_file=oFile, output_type='NIFTI_GZ')
 	fslmerge.run()
