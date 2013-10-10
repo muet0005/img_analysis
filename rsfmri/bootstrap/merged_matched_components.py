@@ -9,6 +9,7 @@ templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 
 nsamples = 100
 
 for template in templates:
+	print template
 	fList = []
 	for s in range(0, nsamples):
 		if s < 10:
@@ -20,10 +21,8 @@ for template in templates:
 		else:
 			s_str = str(s)
 		f = os.path.join(DIR, template + '_' + s_str + '.nii.gz')
-		print f
 		if os.path.exists(f):
 			fList.append(f)
 	oFile = os.path.join(DIR, 'merged', template + '_merged.nii.gz')
-	print fList
 	fslmerge = fsl.Merge(dimension='t', terminal_output='stream',in_files=fList, merged_file=oFile, output_type='NIFTI_GZ')
 	fslmerge.run()
