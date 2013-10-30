@@ -9,6 +9,9 @@ templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 
 nsamples = 100
 
 for template in templates:
+	oFile = os.path.join(DIR, 'merged', template + '_merged.nii.gz')
+	if os.path.exists(oFile):
+		continue
 	print template
 	fList = []
 	for s in range(0, nsamples):
@@ -23,6 +26,11 @@ for template in templates:
 		f = os.path.join(DIR, template + '_' + s_str + '.nii.gz')
 		if os.path.exists(f):
 			fList.append(f)
-	oFile = os.path.join(DIR, 'merged', template + '_merged.nii.gz')
 	fslmerge = fsl.Merge(dimension='t', terminal_output='stream',in_files=fList, merged_file=oFile, output_type='NIFTI_GZ')
 	fslmerge.run()
+for template in templates:
+	print template
+	iFile = os.path.join(DIR, 'merged', template + '_merged.nii.gz')
+	oFile = os.path.join(DIR, 'mean', template + '_merged.nii.gz')
+	fslmaths = fsl.ImageMaths(in_file=iFile, op_string= '-Tmean', out_file=oFile, output_type='NIFTI_GZ', out_data_type='float')
+	fslmaths.run()

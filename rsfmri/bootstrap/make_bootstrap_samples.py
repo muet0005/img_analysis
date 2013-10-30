@@ -3,7 +3,7 @@ import knicr.fmri.fmri_utils as kfmri
 
 DIR = '/home/genr/data/rsfmri'
 
-nSubs = 40
+nSubs = 50
 nSamples = 100
 startSample = 0
 dirname = 'melodic_samples_d16_initial'
