@@ -129,7 +129,7 @@ print 'matching bootstrap sample components to templates...'
 sample_queue = range(nsamples)
 
 if __name__ == '__main__':
-	pool = Pool(processes=4)
+	pool = Pool(processes=10)
 	pool.map(run_sample, sample_queue)
 
 
