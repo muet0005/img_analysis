@@ -8,7 +8,7 @@ import scipy.stats.stats as spstat
 import nipype.interfaces.fsl as fsl
 
 #specify the inputs
-DIR = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_samples_d16_initial'
+DIR = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_samples_d16_n50_s100'
 oDIR = os.path.join(DIR, 'matched')
 
 templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
@@ -23,13 +23,13 @@ src_map = os.path.join(DIR, 'sample.1.melodic_test', 'melodic_IC.nii.gz')
 z = 1.96
 
 #make a function -- two args are the trg and src maps
-def compute_ui(trg_map, src_map):
+def compute_ui(trg_data, src_data):
 	#read in the nifti data for the target (template components) and the source (the experimental set that needs matching)
 	#trg_nii = 
 	#src_nii = 
 	#pull out the data array
-	trg_data = nb.load(trg_map).get_data()
-	src_data = nb.load(src_map).get_data()
+	#trg_data = nb.load(trg_map).get_data()
+	#src_data = nb.load(src_map).get_data()
 	#make an empty array to store the union over intersection values
 	#this is trg# of components x src# of components
 	ui = np.zeros([trg_data.shape[3], src_data.shape[3]])
@@ -77,10 +77,15 @@ def compute_ui(trg_map, src_map):
 	return matched_components
 
 
+trg_maps = {}
+print 'pre-loading templates...'
+for template in templates:
+	print 'loading ', template,
+	trg_map = os.path.join(DIR, 'templates', template + '_merged.nii.gz')
+	trg_maps[template] = nb.load(trg_map).get_data()
+	print 'done.'
 
-
-
-
+print 'matching bootstrap sample components to templates...'
 for sample in range(0, nsamples):
 	if sample < 10:
 		str_sample = '000' + str(sample)
@@ -92,10 +97,11 @@ for sample in range(0, nsamples):
 		str_sample = str(sample)
 	matched_components = {}
 	src_map = os.path.join(DIR, 'sample.' + str(sample) + '.melodic_samples_d16_initial', 'melodic_IC.nii.gz')
+	src_data = nb.load(src_map).get_data()
 	for template in templates:
 		print template
-		trg_map = os.path.join(DIR, 'templates', template + '_merged.nii.gz')
-		matched_components[template] = compute_ui(trg_map, src_map)
+		#trg_map = os.path.join(DIR, 'templates', template + '_merged.nii.gz')
+		matched_components[template] = compute_ui(trg_maps[template], src_data)
 	template_matches = {}
 	for template in matched_components:
 		dict_key = int(spstat.mode(matched_components[template][0])[0][0])
