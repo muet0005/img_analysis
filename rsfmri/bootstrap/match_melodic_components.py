@@ -7,8 +7,9 @@ import numpy as np
 import scipy.stats.stats as spstat
 import nipype.interfaces.fsl as fsl
 
+sample_sfix = 'melodic_samples_d16_n50_s100'
 #specify the inputs
-DIR = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_samples_d16_n50_s100'
+DIR = os.path.join('/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri', sample_sfix)
 oDIR = os.path.join(DIR, 'matched')
 
 templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
@@ -80,10 +81,10 @@ def compute_ui(trg_data, src_data):
 trg_maps = {}
 print 'pre-loading templates...'
 for template in templates:
-	print 'loading ', template,
+	print 'loading...', template,
 	trg_map = os.path.join(DIR, 'templates', template + '_merged.nii.gz')
 	trg_maps[template] = nb.load(trg_map).get_data()
-	print 'done.'
+	print '.done.'
 
 print 'matching bootstrap sample components to templates...'
 for sample in range(0, nsamples):
@@ -96,7 +97,7 @@ for sample in range(0, nsamples):
 	else:
 		str_sample = str(sample)
 	matched_components = {}
-	src_map = os.path.join(DIR, 'sample.' + str(sample) + '.melodic_samples_d16_initial', 'melodic_IC.nii.gz')
+	src_map = os.path.join(DIR, 'sample.' + str(sample) + '.' + sample_sfix, 'melodic_IC.nii.gz')
 	src_data = nb.load(src_map).get_data()
 	for template in templates:
 		print template
