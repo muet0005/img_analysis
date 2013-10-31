@@ -130,7 +130,7 @@ sample_queue = range(nsamples)
 
 if __name__ == '__main__':
 	pool = Pool(processes=4)
-	pool.map(run_ample, sample_queue)
+	pool.map(run_sample, sample_queue)
 
 
 
