@@ -24,7 +24,7 @@ OUTPUT = os.path.join(INPUT, 'output_rlm_10Nov2013')
 feat_pfix = 'idc_'
 feat_sfix = '_27July2013.feat'
 ##name of the data file to feed into dual_reg.  FSL recommends the filtered_func_data in standard space.
-ff_data_name = 'filtered_func_data_2_standard_2mm.nii.gz'
+ff_data_name = 'filtered_func_data_2_standard.nii.gz'
 
 parallel = True
 ncores = 10
@@ -118,6 +118,11 @@ def write_cmd_out(cmd, oFile):
 
 def generate_mask(subj, **kwargs):
 	iFile = os.path.join(os.path.dirname(INPUT), subj, feat_pfix + subj + feat_sfix, ff_data_name)
+	if not os.path.exists(iFile):
+		print 'Cannot locate input file....must exit'
+		print 'input file: ', iFile
+		print 'Please ensure that subject has the input file, or adjust the subject list to remove them.'
+		sys.exit(0)
 	oFile = os.path.join(OUTPUT, 'stage1', 'mask_idc_' + subj + '.nii.gz')
 	cmd_out = os.path.join(OUTPUT, 'stage1', 'stage1_masking_idc_' + subj + '.out')
 	fslmaths = fsl.ImageMaths(in_file=iFile, op_string= '-Tstd -bin', out_file=oFile, output_type='NIFTI_GZ', out_data_type='char')
