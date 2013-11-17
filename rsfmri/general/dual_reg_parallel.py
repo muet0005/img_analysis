@@ -219,6 +219,9 @@ def dr_stage2(i, **kwargs):
 	fslsplit.run()
 
 
+if not __name__ == '__main__' and parallel:
+	parallel = False
+	
 #read the input list....this must be called subjects_list.txt in INPUT, or else specified as kwargs in this step...
 inputs = read_input_list()
 
