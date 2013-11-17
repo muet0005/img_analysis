@@ -2,6 +2,13 @@
 
 idc=${1}
 
+
+if [ "${idc}" == "" ] ; then
+    echo "You must pass a valid procnum"
+    echo "e.g., ./run_mk_fsf_luciana.sh 12345"
+    exit
+fi
+
 #folder where the RSFMRI files live
 DIR=/export/shared/monthly/MRIdata/nifti/155_ADOL_RT/ALL
 #freesurfer subjects dir so that we can make a brain mask -> T1 brain for the feat registration
@@ -48,5 +55,5 @@ python ${pydir}/rsfmri/bootstrap/mk_fsf_files.py -f $DIR -m ${FSLDIR}/data/stand
 ${FSLDIR}/bin/feat $DIR/${idc}/REST/${idc}_${outdir_sfix}.fsf
 
 #align the 4d output to  standard space
-#$FSLDIR/bin/flirt -in $DIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/filtered_func_data -ref $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/reg/standard -out $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/filtered_func_data_2_standard -dof 12 -applyxfm -init $TMPDIR/rmuetzel/rsfmri/$idc/idc_${idc}_${outdir_sfix}/reg/example_func2standard.mat
+$FSLDIR/bin/flirt -in $DIR/$idc/REST/${idc}_${outdir_sfix}/filtered_func_data -ref $DIR/$idc/REST/${idc}_${outdir_sfix}/reg/standard -out $DIR/$idc/REST/${idc}_${outdir_sfix}/filtered_func_data_2_standard_2mm -dof 12 -applyxfm -init $DIR/$idc/REST/${idc}_${outdir_sfix}/reg/example_func2standard.mat
 

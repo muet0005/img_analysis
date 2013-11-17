@@ -41,7 +41,7 @@ if args.genr:
 		
 #check if luciana setup is specified...give the default nomenclature
 elif args.luciana:
-	print 'set up the luciana stuff here'
+	print 'Luciana lab flag set...using those presets...'
 	fmrinii_pfix = 'rest_fmri'
 	outdir = os.path.join(feat_dir, subject, 'REST', str(subject) + outdir_sfix)
 	fmrinii = os.path.join(feat_dir, subject, 'REST', fmrinii_pfix + '.nii.gz')
