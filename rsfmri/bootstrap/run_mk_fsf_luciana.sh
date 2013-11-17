@@ -5,7 +5,7 @@ idc=${1}
 #folder where the RSFMRI files live
 DIR=/export/shared/monthly/MRIdata/nifti/155_ADOL_RT/ALL
 #freesurfer subjects dir so that we can make a brain mask -> T1 brain for the feat registration
-SUBJECTS_DIR=
+SUBJECTS_DIR=/export/shared/monthly/MRIdata/freesurfer_v4.5/155_ADOL_RT/ALL
 
 #fsl setup
 export FSLDIR=/export/shared/daily/data_analysis/rmuetzel/software/fsl/5.0.5
@@ -14,7 +14,8 @@ export PATH=${PATH}:${FSLDIR}/bin
 
 #python path
 #we need this to use the modules in knicr/fmri/fmri_utils.py
-export PYTHONPATH=${PYTHONPATH}:/export/shared/daily/data_analysis/rmuetzel/scripts/genr_bitbucket/lisa/py-site-packages
+pydir=/export/shared/daily/data_analysis/rmuetzel/scripts/genr_bitbucket/lisa
+export PYTHONPATH=${PYTHONPATH}:${pydir}/py-site-packages
 
 #set the name of the output folder for feat.
 #this will be inisde of DIR/PROC/REST/
@@ -41,7 +42,7 @@ echo "The t1 image was multiplied by the FreeSurfer brainmask image to get a bra
 t1=$DIR/$idc/REST/t1_brain.nii.gz
 
 #make the FSF
-python /home/genr/software/bitbucket/lisa/rsfmri/bootstrap/mk_fsf_files.py -f $DIR -m ${FSLDIR}/data/standard/MNI152_T1_2mm_brain.nii.gz -s ${idc} -o ${outdir_sfix} --t1 ${t1} --config ${config} --luciana
+python ${pydir}/rsfmri/bootstrap/mk_fsf_files.py -f $DIR -m ${FSLDIR}/data/standard/MNI152_T1_2mm_brain.nii.gz -s ${idc} -o ${outdir_sfix} --t1 ${t1} --config ${config} --luciana
 
 #run feat
 ${FSLDIR}/bin/feat $DIR/${idc}/REST/${idc}_${outdir_sfix}.fsf

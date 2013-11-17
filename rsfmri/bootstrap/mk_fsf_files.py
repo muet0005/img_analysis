@@ -44,7 +44,7 @@ elif args.luciana:
 	print 'set up the luciana stuff here'
 	fmrinii_pfix = 'rest_fmri'
 	outdir = os.path.join(feat_dir, subject, 'REST', str(subject) + outdir_sfix)
-	fmrinii = os.path.join(feat_dir, subject, fmrinii_pfix + '.nii.gz')
+	fmrinii = os.path.join(feat_dir, subject, 'REST', fmrinii_pfix + '.nii.gz')
 	fsfFile = os.path.join(feat_dir, subject, 'REST', str(subject) + outdir_sfix + '.fsf')
 	if args.t1:
 		t1 = args.t1[0]
