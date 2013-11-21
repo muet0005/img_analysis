@@ -1,10 +1,14 @@
 import os as os
 import knicr.fmri.fmri_utils as kfmri
 
+#set the folder
 DIR = '/home/genr/data/rsfmri'
 
+#set n of subjects per sample
 nSubs = 50
+#set n of samples
 nSamples = 1000
+#if you already run x samples, you can start at that point again, for ease of combining data later
 startSample = 0
 dirname = 'melodic_samples_d16_n50_s1000'
 
