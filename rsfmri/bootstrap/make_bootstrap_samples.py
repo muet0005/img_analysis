@@ -10,6 +10,7 @@ nSubs = 50
 nSamples = 1000
 #if you already run x samples, you can start at that point again, for ease of combining data later
 startSample = 0
+#set the folder name
 dirname = 'melodic_samples_d16_n50_s1000'
 
 mDIR = os.path.join(DIR, dirname)
