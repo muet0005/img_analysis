@@ -7,20 +7,15 @@ import numpy as np
 import scipy.stats.stats as spstat
 import nipype.interfaces.fsl as fsl
 from multiprocessing import Pool
-
+import csv as csv
 
 sample_sfix = 'melodic_samples_d16_n75_s100'
 #specify the inputs
 DIR = os.path.join('/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri', sample_sfix)
-oDIR = os.path.join(DIR, 'matched')
-
+oDIR = os.path.join(DIR, 'matched_FTmix')
 templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
-nsamples = 100
-
-#trg map is the IC that we are checking against
-trg_map = os.path.join(DIR, 'n200', 'melodic_IC_sm6.nii.gz')
-#src map is one of the bootstrap samples we are trying to match with the trg
-src_map = os.path.join(DIR, 'sample.1.melodic_test', 'melodic_IC.nii.gz')
+nsamples = 1
+ncores = 5
 
 #for thresholding the IC maps....they are Z maps
 z = 1.96
@@ -80,6 +75,35 @@ def compute_ui(trg_data, src_data):
 	return matched_components
 
 
+#a function to read in the power spectra, and select the column for a given component
+def read_ftmix(ftmix, component):
+    f = open(ftmix, 'r')
+    csv_ft = csv.reader(f, delimiter=' ')
+    ft = []
+    for line in csv_ft:
+        rm_ws = True
+        while rm_ws:
+            try:
+                line.remove('')
+            except:
+                rm_ws = False
+        ft.append(line)
+    ft_component = []
+    for line in ft:
+        ft_component.append(line[component])
+    f.close()
+    return ft_component
+
+
+#a function to write out a file with the power spectrum for the column of interest inthe melodic_FTmix file
+def write_ftmix(ftmix_data, ftmix_file):
+    f = open(ftmix_file, 'w')
+    for i in ftmix_data:
+        f.write(i + '\n')
+    f.close()
+
+
+
 trg_maps = {}
 print 'pre-loading templates...'
 for template in templates:
@@ -120,16 +144,21 @@ def run_sample(sample):
 				print max_new, max_existing
 	for vol in template_matches.keys():
 		component = template_matches[vol]
-		oFile = os.path.join(DIR, 'matched', component + '_' + str_sample + '.nii.gz')
+		oFile = os.path.join(oDIR, component + '_' + str_sample + '.nii.gz')
 		fslroi = fsl.ExtractROI(in_file=src_map, roi_file=oFile, t_min=vol, t_size=1)
 		fslroi.run()
+		#then write out the power spectrum goodness
+		ft_mix = os.path.join(DIR, 'sample.' + str(sample) + '.' + sample_sfix, 'melodic_FTmix')
+		ft_data = read_ftmix(ft_mix, vol)
+		ft_out = os.path.join(oDIR, component + '_' + str_sample + '.FTmix.txt')
+		write_ftmix(ft_data, ft_out)
 
 
 print 'matching bootstrap sample components to templates...'
 sample_queue = range(nsamples)
 
 if __name__ == '__main__':
-	pool = Pool(processes=10)
+	pool = Pool(processes=ncores)
 	pool.map(run_sample, sample_queue)
 
 

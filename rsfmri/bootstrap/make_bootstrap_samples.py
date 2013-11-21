@@ -10,7 +10,7 @@ dirname = 'melodic_samples_d16_n50_s1000'
 
 mDIR = os.path.join(DIR, dirname)
 
-subj_list = os.path.join(mDIR, 'cbcl_clinical_cutoff_IDC_N486.txt')
+subj_list = os.path.join(mDIR, 'RLM_template_sample_n486_noClinProb_moco3mm.txt')
 
 gbs = kfmri.gen_bootstrap_samples()
 
