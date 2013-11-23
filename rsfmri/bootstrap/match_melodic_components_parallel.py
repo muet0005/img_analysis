@@ -9,12 +9,13 @@ import nipype.interfaces.fsl as fsl
 from multiprocessing import Pool
 import csv as csv
 
-sample_sfix = 'melodic_samples_d16_n75_s100'
+sample_sfix = 'melodic_samples_d16_n50_s1000'
 #specify the inputs
 DIR = os.path.join('/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri', sample_sfix)
-oDIR = os.path.join(DIR, 'matched_FTmix')
+oDIR = os.path.join(DIR, 'matched')
+templateDir = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_ica_templates/d16'
 templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
-nsamples = 1
+nsamples = 10
 ncores = 5
 
 #for thresholding the IC maps....they are Z maps
@@ -77,30 +78,30 @@ def compute_ui(trg_data, src_data):
 
 #a function to read in the power spectra, and select the column for a given component
 def read_ftmix(ftmix, component):
-    f = open(ftmix, 'r')
-    csv_ft = csv.reader(f, delimiter=' ')
-    ft = []
-    for line in csv_ft:
-        rm_ws = True
-        while rm_ws:
-            try:
-                line.remove('')
-            except:
-                rm_ws = False
-        ft.append(line)
-    ft_component = []
-    for line in ft:
-        ft_component.append(line[component])
-    f.close()
-    return ft_component
+	f = open(ftmix, 'r')
+	csv_ft = csv.reader(f, delimiter=' ')
+	ft = []
+	for line in csv_ft:
+		rm_ws = True
+		while rm_ws:
+			try:
+				line.remove('')
+			except:
+				rm_ws = False
+		ft.append(line)
+	ft_component = []
+	for line in ft:
+		ft_component.append(line[component])
+	f.close()
+	return ft_component
 
 
 #a function to write out a file with the power spectrum for the column of interest inthe melodic_FTmix file
 def write_ftmix(ftmix_data, ftmix_file):
-    f = open(ftmix_file, 'w')
-    for i in ftmix_data:
-        f.write(i + '\n')
-    f.close()
+	f = open(ftmix_file, 'w')
+	for i in ftmix_data:
+		f.write(i + '\n')
+	f.close()
 
 
 
@@ -108,9 +109,9 @@ trg_maps = {}
 print 'pre-loading templates...'
 for template in templates:
 	print 'loading...', template,
-	trg_map = os.path.join(DIR, 'templates', template + '_merged.nii.gz')
+	trg_map = os.path.join(templateDir, template + '_merged.nii.gz')
 	trg_maps[template] = nb.load(trg_map).get_data()
-	print '.done.'
+	print '....done.'
 
 
 def run_sample(sample):
@@ -143,14 +144,23 @@ def run_sample(sample):
 				template_matches[dict_key] = template
 				print max_new, max_existing
 	for vol in template_matches.keys():
+		print 'Writing out components...'
 		component = template_matches[vol]
-		oFile = os.path.join(oDIR, component + '_' + str_sample + '.nii.gz')
+		if not os.path.exists(os.path.join(oDIR, component)):
+			os.makedirs(os.path.join(oDIR, component))
+		oFile = os.path.join(oDIR, component, component + '_' + str_sample + '.nii.gz')
+		print oFile
 		fslroi = fsl.ExtractROI(in_file=src_map, roi_file=oFile, t_min=vol, t_size=1)
 		fslroi.run()
 		#then write out the power spectrum goodness
 		ft_mix = os.path.join(DIR, 'sample.' + str(sample) + '.' + sample_sfix, 'melodic_FTmix')
 		ft_data = read_ftmix(ft_mix, vol)
-		ft_out = os.path.join(oDIR, component + '_' + str_sample + '.FTmix.txt')
+		ft_out = os.path.join(oDIR, component, component + '_' + str_sample + '.FTmix.txt')
+		write_ftmix(ft_data, ft_out)
+		#and why not the time courses as well...
+		ft_mix = os.path.join(DIR, 'sample.' + str(sample) + '.' + sample_sfix, 'melodic_mix')
+		ft_data = read_ftmix(ft_mix, vol)
+		ft_out = os.path.join(oDIR, component, component + '_' + str_sample + '.mix.txt')
 		write_ftmix(ft_data, ft_out)
 
 
@@ -160,11 +170,6 @@ sample_queue = range(nsamples)
 if __name__ == '__main__':
 	pool = Pool(processes=ncores)
 	pool.map(run_sample, sample_queue)
-
-
-
-
-
 
 
 
