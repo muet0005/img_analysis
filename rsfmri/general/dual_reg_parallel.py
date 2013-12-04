@@ -18,16 +18,16 @@ __version__ = "0.1"
 #melodic_IC.nii.gz, subject_list.txt (full paths to filtered func data), 
 INPUT = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/dual_regression'
 #output dir
-OUTPUT = os.path.join(INPUT, 'output_rlm_10Nov2013')
+OUTPUT = os.path.join(INPUT, 'output_lmeb_dysregulation_29Nov2013')
 
-#feat folder prefix and suffix.  This will look something like this in the end: $feat_pfix_$subjid_$feat_sfix
+#feat folder prefix and suffix.	 This will look something like this in the end: $feat_pfix_$subjid_$feat_sfix
 feat_pfix = 'idc_'
 feat_sfix = '_27July2013.feat'
-##name of the data file to feed into dual_reg.  FSL recommends the filtered_func_data in standard space.
+##name of the data file to feed into dual_reg.	FSL recommends the filtered_func_data in standard space.
 ff_data_name = 'filtered_func_data_2_standard.nii.gz'
 
 parallel = True
-ncores = 10
+ncores = 5
 
 def read_txt_file(txtFile, **kwargs):
 	data = []
@@ -73,10 +73,10 @@ def write_txt_file(data, txtFile, **kwargs):
 
 
 def read_input_list(**kwargs):
-	subj_list = os.path.join(INPUT, 'subject_list.txt')
+	subj_list = os.path.join(OUTPUT, 'subject_list.txt')
 	for i in kwargs.keys():
 		if i == 'subj_list':
-			subj_list =  kwargs[i]
+			subj_list =	 kwargs[i]
 	if not subj_list or not os.path.exists(subj_list):
 		print "Cannot locate input subject list.  Please ensure one of the following: "
 		print "1.) The list is in input dir and called subject_list.txt"
@@ -147,7 +147,7 @@ def generate_common_mask(inputs):
 
 def dr_stage1(i, **kwargs):
 	subj, mask = i
-	ics = os.path.join(INPUT, 'melodic_IC.nii.gz')
+	ics = os.path.join(OUTPUT, 'melodic_IC.nii.gz')
 	desnorm = True
 	for i in kwargs.keys():
 		if i == 'desnorm':
@@ -188,7 +188,7 @@ def dr_stage2(i, **kwargs):
 			if kwargs[i]:
 				desnorm = True
 			else:
-				desnorm = False	
+				desnorm = False
 	dr_s1_txt = os.path.join(OUTPUT, 'stage1', 'dr_stage1_idc_' + subj + '.txt')
 	moco_txt = os.path.join(os.path.dirname(INPUT), subj, feat_pfix + subj + feat_sfix, 'mc', 'prefiltered_func_data_mcf.par')
 	dr_s1 = read_txt_file(dr_s1_txt)
@@ -223,11 +223,14 @@ if not __name__ == '__main__' and parallel:
 	parallel = False
 	
 #read the input list....this must be called subjects_list.txt in INPUT, or else specified as kwargs in this step...
-inputs = read_input_list()
+inputs = read_input_list(subj_list=os.path.join(OUTPUT, 'subject_list.txt'))
 
 if not os.path.exists(OUTPUT):
-	os.makedirs(os.path.join(OUTPUT, 'stage1'))
-	os.makedirs(os.path.join(OUTPUT, 'stage2'))
+	os.makedirs(OUTPUT)
+stages=['stage1', 'stage2']
+for stage in stages:
+    if not os.path.exists(os.path.join(OUTPUT, stage)):
+	    os.makedirs(os.path.join(OUTPUT, stage))
 
 print "Found: ", len(inputs), " data sets in subject list."
 print "Making masks....mode parallel: ", parallel

@@ -9,17 +9,20 @@ import nipype.interfaces.fsl as fsl
 from multiprocessing import Pool
 import csv as csv
 
-sample_sfix = 'melodic_samples_d16_n50_s1000'
+sample_sfix = 'melodic_samples_d25_n50_s100B'
 #specify the inputs
 DIR = os.path.join('/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri', sample_sfix)
 oDIR = os.path.join(DIR, 'matched')
-templateDir = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_ica_templates/d16'
-templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
-nsamples = 10
-ncores = 5
+templateDir = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_ica_templates/d25'
+#templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
+#templates = ['ant_frontal', 'auditory', 'cerebellum', 'dmn', 'executive_control', 'inf_mid_frontal', 'inf_parietal_temporal', 'insula_acc', 'lat_dorsal_frontal', 'left_pf', 'mid_frontal', 'parietal_occipital', 'pcc', 'pcc_parietal', 'posterior_cerebellum', 'right_pf', 'sensorimotor', 'subcortical', 'visual', 'noise_inf_brainstem', 'noise_lower_brainstem_cerebellum', 'noise_pons_large', 'noise_pons_small', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_temporal_vessel', 'noise_wm_vent', 'noise_cerebellum_occipital']
+templates = ['ant_frontal', 'auditory','cerebellumA', 'cerebellumB', 'executive_control', 'inf_mid_frontal', 'insula_acc', 'lang_atten', 'left_pf', 'mid_frontal', 'noise_inf_brainstem', 'noise_lower_brainstem_cerebellum', 'noise_occ_cerebellum', 'noise_pons_large', 'noise_pons_small', 'noise_sinus', 'noise_subcortical', 'noise_sup_frontal', 'noise_temporal_vessel', 'noise_wm_vent', 'parietal_occipital', 'pcc', 'pcc_parietal', 'right_pf', 'sensory', 'sup_motor', 'visual']
+ndim=25
+nsamples = 100
+ncores = 15
 
 #for thresholding the IC maps....they are Z maps
-z = 1.96
+z = 3.3
 
 #make a function -- two args are the trg and src maps
 def compute_ui(trg_data, src_data):
@@ -61,18 +64,13 @@ def compute_ui(trg_data, src_data):
 			#scc[c_trg, c_src] = pr(trg_data[:,:,:,c_trg].ravel(), src_data[:,:,:,c_src].ravel())[0]
 			#tdis[c_trg, c_src] = rogerstanimoto(trg_mask_pos.ravel(), src_mask_pos.ravel())
 	#make an empty matrix to store the matches
+	#this is an array that is 2 x n-components
 	matched_components = np.zeros([2, trg_data.shape[3]])
 	#now iterate through each target component, and find the max U/I...this is your match
 	for i in range(0, trg_data.shape[3]):
-		#print 'Target component: ',  i, ' Source Component: ', np.argmax(ui[i]), np.argmax(scc[i]), np.argmin(tdis[i]), np.max(ui[i]), np.max(scc[i]), np.min(tdis[i])
-		#print 'Target component: ',	 i, ' Source Component: ', np.argmax(ui[i]), np.max(ui[i])
+	    #here we fill this array with the volume where the max UI is (1st row), and also the UI value (2nd row)
 		matched_components[0][i] = np.argmax(ui[i])
 		matched_components[1][i] = np.max(ui[i])
-		#matched_components[i][np.argmax(scc[i])] += 1
-		#matched_components[i][np.argmax(tdis[i])] += 1
-	#print matched_components
-	#mode = spstat.mode(matched_components)
-	#print 'Selected component:',  int(mode[0][0])
 	return matched_components
 
 
@@ -123,15 +121,22 @@ def run_sample(sample):
 		str_sample = '0' + str(sample)	
 	else:
 		str_sample = str(sample)
+	#make an empty dictionary to hold the matches
 	matched_components = {}
 	src_map = os.path.join(DIR, 'sample.' + str(sample) + '.' + sample_sfix, 'melodic_IC.nii.gz')
 	src_data = nb.load(src_map).get_data()
 	for template in templates:
 		print template
 		#trg_map = os.path.join(DIR, 'templates', template + '_merged.nii.gz')
+		#for each template --- add the matched component info
+		#this is a 2 x n-component numpy array
+		#The first row holds the volume number from the source/input data that had the max UI with a given tempalte
+		#the second column holds the UI for that volume
 		matched_components[template] = compute_ui(trg_maps[template], src_data)
+	#now we make a final dictionary to hold the actual final decisions on matches
 	template_matches = {}
 	for template in matched_components:
+	    #find the mode, most commonly matched volume for a given template
 		dict_key = int(spstat.mode(matched_components[template][0])[0][0])
 		if not template_matches.has_key(dict_key):
 			template_matches[dict_key] = template
@@ -143,8 +148,10 @@ def run_sample(sample):
 				print 'Dictionary key: ', dict_key, ' was reassigned from ', template_matches[dict_key], ' to: ', template
 				template_matches[dict_key] = template
 				print max_new, max_existing
+	vol_selected = []
 	for vol in template_matches.keys():
 		print 'Writing out components...'
+		vol_selected.append(vol)
 		component = template_matches[vol]
 		if not os.path.exists(os.path.join(oDIR, component)):
 			os.makedirs(os.path.join(oDIR, component))
@@ -162,7 +169,15 @@ def run_sample(sample):
 		ft_data = read_ftmix(ft_mix, vol)
 		ft_out = os.path.join(oDIR, component, component + '_' + str_sample + '.mix.txt')
 		write_ftmix(ft_data, ft_out)
-
+	#######find out which components didn't get matched and write them out as extras...
+	if not os.path.exists(os.path.join(oDIR, 'unmatched')):
+	    os.makedirs(os.path.join(oDIR, 'unmatched'))
+	for c in range(0, ndim):
+	    if not c in vol_selected:
+	        print 'vol was not matched to a component: ', c
+	        oFile = os.path.join(oDIR, 'unmatched',  'unmatched_vol' + str(c) + '_sample' + str_sample + '.nii.gz')
+    		fslroi = fsl.ExtractROI(in_file=src_map, roi_file=oFile, t_min=c, t_size=1)
+    		fslroi.run()
 
 print 'matching bootstrap sample components to templates...'
 sample_queue = range(nsamples)

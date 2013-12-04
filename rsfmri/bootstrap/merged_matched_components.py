@@ -2,10 +2,11 @@ import os as os
 import nipype.interfaces.fsl as fsl
 
 #specify the inputs
-DIR = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_samples_d16_initial/matched'
+DIR = '/Volumes/rbraid/mr_data_idc/aug2013_final/rsfmri/melodic_samples_d25_n50_s100/matched'
 oDIR = os.path.join(DIR, 'merged')
 
-templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
+#templates = ['cerebellum', 'DMN', 'inferior_mid_frontal', 'insula_subcortical', 'left_pf', 'mid_frontal', 'noise_ant_frontal', 'noise_lower_brainstem', 'noise_pons_vessel', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_upper_brainstem', 'noise_vent_wm', 'parietal', 'right_pf', 'sensory_motor', 'superior_mid_frontal', 'visual']
+templates = ['ant_frontal', 'auditory', 'cerebellum', 'dmn', 'executive_control', 'inf_mid_frontal', 'inf_parietal_temporal', 'insula_acc', 'lat_dorsal_frontal', 'left_pf', 'mid_frontal', 'parietal_occipital', 'pcc', 'pcc_parietal', 'posterior_cerebellum', 'right_pf', 'sensorimotor', 'subcortical', 'visual', 'noise_inf_brainstem', 'noise_lower_brainstem_cerebellum', 'noise_pons_large', 'noise_pons_small', 'noise_sinus', 'noise_sup_frontal', 'noise_susceptibility', 'noise_temporal_vessel', 'noise_wm_vent', 'noise_cerebellum_occipital']
 nsamples = 100
 
 for template in templates:
@@ -23,7 +24,7 @@ for template in templates:
 			s_str = '0' + str(s)
 		else:
 			s_str = str(s)
-		f = os.path.join(DIR, template + '_' + s_str + '.nii.gz')
+		f = os.path.join(DIR, template, template + '_' + s_str + '.nii.gz')
 		if os.path.exists(f):
 			fList.append(f)
 	fslmerge = fsl.Merge(dimension='t', terminal_output='stream',in_files=fList, merged_file=oFile, output_type='NIFTI_GZ')
