@@ -3,7 +3,8 @@
 DIR=/home/genr/data/randomise_tests
 ic=dr_stage2_merged_pe_ic0003
 statroot=design_mainfx
-oDIR=/global/rmuetzel/randomise/${ic}_${statroot}
+oDIR=${TEMPDIR}/rmuetzel/randomise/${ic}_${statroot}
+gDIR=/global/rmuetzel
 
 seed=${1}
 nperms=${2}
@@ -36,17 +37,26 @@ export PATH=${PATH}:${FSLDIR}/bin
 if [ ! -d $oDIR ] ; then
 	mkdir -p $oDIR/parallel
 fi
+if [! -d $gDIR ] ; then
+    mkdir -p $gDir
+fi
 
-echo "**************COPYING TO SCRATCH SPACE***************"
-echo "cp -r ${DIR}/${icroot}${ic}.nii.gz ${oDIR}/"
-echo "cp -r ${DIR}/mask.nii.gz ${oDIR}/"
-echo "cp -r ${DIR}/${statroot}.* ${oDIR}/"
-cp -r ${DIR}/${icroot}${ic}.nii.gz ${oDIR}/
-cp -r ${DIR}/mask.nii.gz ${oDIR}/
-cp -r ${DIR}/${statroot}.* ${oDIR}/
-echo "**************FINISHED COPYING TO SCRATCH SPACE***************"
+#echo "**************COPYING TO SCRATCH SPACE***************"
+#echo "cp -r ${DIR}/${ic}.nii.gz ${gDIR}/"
+#echo "cp -r ${DIR}/mask.nii.gz ${gDIR}/"
+#echo "cp -r ${DIR}/${statroot}.* ${gDIR}/"
+#if [! -e $gDIR/${ic}.nii.gz ] ; then
+#    cp -r ${DIR}/${ic}.nii.gz ${gDIR}/
+#fi
+#if [ ! -e $gDIR/mask.nii.gz ] ; then
+#    cp -r ${DIR}/mask.nii.gz ${gDIR}/
+#fi
+#if [ ! -e $gDIR/${statroot}.mat ] ; then
+#    cp -r ${DIR}/${statroot}.* ${gDIR}/
+#fi
+#echo "**************FINISHED COPYING TO SCRATCH SPACE***************"
 
-python $DIR/randomise_parallel.py -i ${oDIR}/${ic}.nii.gz --dir ${oDIR} -d ${oDIR}/${statroot}.mat -t ${oDIR}/${statroot}.con -o ${ic}_${statroot} --T --glm --nperm ${nperm}
+python $DIR/randomise_stopos.py -i ${DIR}/${ic}.nii.gz --dir ${oDIR} -d ${DIR}/${statroot}.mat -t ${DIR}/${statroot}.con -o ${ic}_${statroot} --T --glm --nperm ${nperm}
 
 echo "**************COPYING TO HOME DIRECTORY***************"
 echo "cp -r ${oDIR} ${DIR}/"
