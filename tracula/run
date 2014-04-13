@@ -13,9 +13,9 @@ tracula_data=${HOME}/data/tracula/5.3
 fs_data=${HOME}/data/freesurfer/5.3/wusl
 
 #which versions would you like to use?
-#these are the same as FREESURFER_HOME and FSLDIR, respectively
-fs_version=/home/genr/software/fsl/5.3.0
-fsl_version=/home/genr/software/freesurfer/5.0.5
+#these are the same as FSLDIR and FREESURFER_HOME
+fsl_version=/home/genr/software/fsl/5.0.5
+fs_version=/home/genr/software/freesurfer/5.3.0
 
 #point to the DTI scratch space (i.e., where you want it to go on the node)
 dti_scratch=$TMPDIR/rmuetzel/tracula/dti
