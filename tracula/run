@@ -20,8 +20,8 @@ if [ ! -d $TMPDIR/rmuetzel/tracula/freesurfer ] ; then
 fi
 
 shdir=/home/genr/software/bitbucket/lisa/tracula
-tracula_data=${HOME}/data/tracula/5.2
-fs_data=${HOME}/data/freesurfer/5.1
+tracula_data=${HOME}/data/tracula/5.3
+fs_data=${HOME}/data/freesurfer/5.3/wusl
 
 if [ "$trctype" == "bedp" ] ; then
 	if [ ! -e ${tracula_data}/${idc}/dmri/data.nii.gz ] ; then
@@ -42,19 +42,22 @@ echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
 rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/
 rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
 
-if [ "$trctype" == "prep" ] ; then
-	${shdir}/prep_raw_dti_4_tracula.sh $TMPDIR/rmuetzel/tracula/dti ${idc}
-fi
+
+#for 5.3, I took this out. The bvec/bvals no longer need to be rotated.
+#further, I simply downsampled the diff data beforehand
+#if [ "$trctype" == "prep" ] ; then
+#	${shdir}/prep_raw_dti_4_tracula.sh $TMPDIR/rmuetzel/tracula/dti ${idc}
+#fi
 
 python ${shdir}/mk_tracula_cfg.py $TMPDIR/rmuetzel/tracula/freesurfer $TMPDIR/rmuetzel/tracula/dti ${idc} $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg
 
-export FSLDIR=/home/muetzel/software/fsl-4.1.9
+export FSLDIR=/home/genr/software/fsl/5.0.5
 source $FSLDIR/etc/fslconf/fsl.sh
 export SUBJECTS_DIR=$TMPDIR/rmuetzel/tracula/freesurfer
 
-export FREESURFER_HOME=/home/genr/software/freesurfer/5.2.0
+export FREESURFER_HOME=/home/genr/software/freesurfer/5.3.0
 source ${FREESURFER_HOME}/SetUpFreeSurfer.sh
 
-${shdir}/trac-all-rlm.5.2 -c $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg -${trctype}
+${FREESURFER_HOME}/bin/trac-all -c $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg -${trctype}
 
 cp -ruvL $TMPDIR/rmuetzel/tracula/dti/${idc}/ ${tracula_data}/

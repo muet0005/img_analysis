@@ -1,17 +1,17 @@
 #!/bin/bash
 
-DIR=/home/genr/data/randomise_tests
-ic=dr_stage2_merged_pe_ic0003
-statroot=design_mainfx
-oDIR=${TEMPDIR}/rmuetzel/randomise/${ic}_${statroot}
-gDIR=/global/rmuetzel
+ic=${1}
+statroot=${2}
+seed=${3}
+nperms=${4}
 
-seed=${1}
-nperms=${2}
+DIR=/home/genr/data/randomise_tests
+oDIR=${TMPDIR}/rmuetzel/randomise/${ic}_${statroot}
+gDIR=/global/rmuetzel
 
 #make sure a seed is passed
 #make sure number of permutations is passed
-if [ $# != 2 ] ; then
+if [ $# != 4 ] ; then
     echo "Must supply the seed number and number of permutations for randomise..."
     exit
 fi
@@ -37,8 +37,8 @@ export PATH=${PATH}:${FSLDIR}/bin
 if [ ! -d $oDIR ] ; then
 	mkdir -p $oDIR/parallel
 fi
-if [! -d $gDIR ] ; then
-    mkdir -p $gDir
+if [ ! -d $gDIR ] ; then
+    mkdir -p $gDIR
 fi
 
 #echo "**************COPYING TO SCRATCH SPACE***************"
@@ -56,8 +56,13 @@ fi
 #fi
 #echo "**************FINISHED COPYING TO SCRATCH SPACE***************"
 
-python $DIR/randomise_stopos.py -i ${DIR}/${ic}.nii.gz --dir ${oDIR} -d ${DIR}/${statroot}.mat -t ${DIR}/${statroot}.con -o ${ic}_${statroot} --T --glm --nperm ${nperm}
+python $DIR/randomise_stopos.py -i ${DIR}/${ic}.nii.gz --dir ${oDIR} -d ${DIR}/${statroot}.mat -t ${DIR}/${statroot}.con -m ${DIR}/mask.nii.gz -o ${ic}_${statroot} --T --glm --nperm ${nperms} -s ${seed}
+
+if [ ! -d $DIR/${ic}_${statroot}/parallel ] ; then
+    mkdir -p $DIR/${ic}_${statroot}/parallel
+fi
+    
 
 echo "**************COPYING TO HOME DIRECTORY***************"
-echo "cp -r ${oDIR} ${DIR}/"
-cp -r ${oDIR} ${DIR}/
+echo "cp -r ${oDIR}/ ${DIR}/${ic}_${statroot}/"
+cp -r "${oDIR}"/parallel/* ${DIR}/${ic}_${statroot}/parallel/

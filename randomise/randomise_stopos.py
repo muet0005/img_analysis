@@ -89,16 +89,16 @@ else:
 	demean = False
 
 if not os.path.exists(mat) or not os.path.exists(con) or not os.path.exists(mask):
-    print 'Cannot locate design matrix/contrast or mask':
+    print 'Cannot locate design matrix/contrast or mask'
     print 'design matrix: ', mat
-    print 'design contrast: 'con
+    print 'design contrast: ', con
     print 'Mask: ', mask
     print 'You must supply full path to the files, or ensure design.mat/.con / mask.nii.gz exist in the input directory!'
     sys.exit(0)
 
 #n_spec_perms = the number of permutations specified by the user
-n_spec_perms = nperm
 
-seed_info = (seed, inDir, iFile, obn, mask, mat, con, nperms_per_core, glm, demean)
+
+seed_info = (seed, inDir, iFile, obn, mask, mat, con, nperm, glm, demean)
 randomise_parallel(seed_info)
 
