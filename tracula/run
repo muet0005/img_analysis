@@ -1,8 +1,28 @@
 #!/bin/bash
 
+#pass the idc and trac-all "type"..ie prep bedp or paths
 idc=${1}
 trctype=${2}
 
+####################-----------------######################
+#tell this code where to find the other shells/python code it needs
+shdir=/home/genr/software/bitbucket/lisa/tracula
+#point to the tracula location in the home folder
+tracula_data=${HOME}/data/tracula/5.3
+#point to the freesurfer data in the home folder
+fs_data=${HOME}/data/freesurfer/5.3/wusl
+
+#which versions would you like to use?
+#these are the same as FREESURFER_HOME and FSLDIR, respectively
+fs_version=/home/genr/software/fsl/5.3.0
+fsl_version=/home/genr/software/freesurfer/5.0.5
+
+#point to the DTI scratch space (i.e., where you want it to go on the node)
+dti_scratch=$TMPDIR/rmuetzel/tracula/dti
+#pint to the FS scratch space (i.e., where you want it on the node)
+fs_scratch=$TMPDIR/rmuetzel/tracula/freesurfer
+
+####################-----------------######################
 if [ ${idc} == "" ] ; then
 	echo "IDC: ${idc} APPEARS TO BE EMPTY....MUST EXIT!"
 	exit
@@ -12,16 +32,13 @@ if [ ${trctype} == "" ] ; then
 	exit
 fi
 
-if [ ! -d $TMPDIR/rmuetzel/tracula/dti ] ; then
-	mkdir -p $TMPDIR/rmuetzel/tracula/dti
+if [ ! -d $dti_scratch ] ; then
+	mkdir -p $dti_scratch
 fi
-if [ ! -d $TMPDIR/rmuetzel/tracula/freesurfer ] ; then
-	mkdir -p $TMPDIR/rmuetzel/tracula/freesurfer
+if [ ! -d $fs_scratch ] ; then
+	mkdir -p $fs_scratch
 fi
 
-shdir=/home/genr/software/bitbucket/lisa/tracula
-tracula_data=${HOME}/data/tracula/5.3
-fs_data=${HOME}/data/freesurfer/5.3/wusl
 
 if [ "$trctype" == "bedp" ] ; then
 	if [ ! -e ${tracula_data}/${idc}/dmri/data.nii.gz ] ; then
@@ -32,15 +49,14 @@ if [ "$trctype" == "bedp" ] ; then
 	fi
 fi
 
-
 echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
-echo "rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/"
-echo "rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/"
+echo "rsync -rtvzL ${tracula_data}/${idc} $dti_scratch/"
+echo "rsync -rtvzL ${fs_data}/${idc} $fs_scratch/"
 echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
 
 
-rsync -rtvzL ${tracula_data}/${idc} $TMPDIR/rmuetzel/tracula/dti/
-rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
+rsync -rtvzL ${tracula_data}/${idc} $dti_scratch/
+rsync -rtvzL ${fs_data}/${idc} $fs_scratch/
 
 
 #for 5.3, I took this out. The bvec/bvals no longer need to be rotated.
@@ -49,15 +65,15 @@ rsync -rtvzL ${fs_data}/${idc} $TMPDIR/rmuetzel/tracula/freesurfer/
 #	${shdir}/prep_raw_dti_4_tracula.sh $TMPDIR/rmuetzel/tracula/dti ${idc}
 #fi
 
-python ${shdir}/mk_tracula_cfg.py $TMPDIR/rmuetzel/tracula/freesurfer $TMPDIR/rmuetzel/tracula/dti ${idc} $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg
+python ${shdir}/mk_tracula_cfg.py $fs_scratch $dti_scratch ${idc} $dti_scratch/${idc}/${idc}.trc.cfg
 
-export FSLDIR=/home/genr/software/fsl/5.0.5
+export FSLDIR=$fsl_version
 source $FSLDIR/etc/fslconf/fsl.sh
-export SUBJECTS_DIR=$TMPDIR/rmuetzel/tracula/freesurfer
+export SUBJECTS_DIR=$fs_scratch
 
-export FREESURFER_HOME=/home/genr/software/freesurfer/5.3.0
+export FREESURFER_HOME=$fs_version
 source ${FREESURFER_HOME}/SetUpFreeSurfer.sh
 
-${FREESURFER_HOME}/bin/trac-all -c $TMPDIR/rmuetzel/tracula/dti/${idc}/${idc}.trc.cfg -${trctype}
+${FREESURFER_HOME}/bin/trac-all -c $dti_scratch/${idc}/${idc}.trc.cfg -${trctype}
 
-cp -ruvL $TMPDIR/rmuetzel/tracula/dti/${idc}/ ${tracula_data}/
+cp -ruvL $dti_scratch/${idc}/ ${tracula_data}/
