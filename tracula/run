@@ -19,6 +19,11 @@ fs_version=/home/genr/software/freesurfer/5.3.0
 
 #point to the DTI scratch space (i.e., where you want it to go on the node)
 dti_scratch=$TMPDIR/rmuetzel/tracula/dti
+
+#set to zero to pull fs data from home folder 
+#this is probably OK -- the pulls to fs dir are few, I think?
+use_fs_scratch=0
+
 #point to the FS scratch space (i.e., where you want it on the node)
 if [ $use_fs_scratch == 1 ] ; then
     fs_scratch=$TMPDIR/rmuetzel/tracula/freesurfer
