@@ -23,9 +23,9 @@ cfg_str = 'set dcmroot = ' + os.path.join(dtroot, subjid)
 cfg.write(cfg_str + '\n')
 cfg_str = 'set dcmlist = (dti_idc_' + subjid + '_2mm.nii.gz)'
 cfg.write(cfg_str + '\n')
-cfg_str = 'set bvalfile = ' + os.path.join(dtroot, subjid + '/dti_idc_' + subjid + '.bval')
+cfg_str = 'set bvalfile = ' + os.path.join(dtroot, subjid + '/dti_idc_' + subjid + '.transposed.bval')
 cfg.write(cfg_str + '\n')
-cfg_str = 'set bvecfile = ' + os.path.join(dtroot, subjid + '/dti_idc_' + subjid + '.bvec')
+cfg_str = 'set bvecfile = ' + os.path.join(dtroot, subjid + '/dti_idc_' + subjid + '.transposed.bvec')
 cfg.write(cfg_str + '\n')
 cfg_str = 'set nb0 = 3'
 cfg.write(cfg_str + '\n')

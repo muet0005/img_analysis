@@ -19,8 +19,12 @@ fs_version=/home/genr/software/freesurfer/5.3.0
 
 #point to the DTI scratch space (i.e., where you want it to go on the node)
 dti_scratch=$TMPDIR/rmuetzel/tracula/dti
-#pint to the FS scratch space (i.e., where you want it on the node)
-fs_scratch=$TMPDIR/rmuetzel/tracula/freesurfer
+#point to the FS scratch space (i.e., where you want it on the node)
+if [ $use_fs_scratch == 1 ] ; then
+    fs_scratch=$TMPDIR/rmuetzel/tracula/freesurfer
+else
+    fs_scratch=$fs_data
+fi
 
 ####################-----------------######################
 if [ ${idc} == "" ] ; then
@@ -56,14 +60,19 @@ echo "**************RUNNING RSYNC TO SCRATCH SPACE***************"
 
 
 rsync -rtvzL ${tracula_data}/${idc} $dti_scratch/
-rsync -rtvzL ${fs_data}/${idc} $fs_scratch/
-
+if [ $use_fs_scratch == 1 ] ; then
+    rsync -rtvzL ${fs_data}/${idc} $fs_scratch/
+fi
 
 #for 5.3, I took this out. The bvec/bvals no longer need to be rotated.
 #further, I simply downsampled the diff data beforehand
-#if [ "$trctype" == "prep" ] ; then
-#	${shdir}/prep_raw_dti_4_tracula.sh $TMPDIR/rmuetzel/tracula/dti ${idc}
-#fi
+if [ "$trctype" == "prep" ] ; then
+    for b in bval bvec ; do
+        if [ ! -e $dti_scratch/${idc}/dti_idc_${idc}.transpose.${b} ] ; then
+	        python ${shdir}/transpose_b_tbl.py $dti_scratch/${idc}/dti_idc_${idc}.${b} $dti_scratch/${idc}/dti_idc_${idc}.transposed.${b}
+	    fi
+    done
+fi
 
 python ${shdir}/mk_tracula_cfg.py $fs_scratch $dti_scratch ${idc} $dti_scratch/${idc}/${idc}.trc.cfg
 
