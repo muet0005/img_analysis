@@ -24,7 +24,6 @@ for c in range(0, ncols):
 			pass
 	transp_bvecs_data.append(tmp)
 transp_bvecs_data = filter(None, transp_bvecs_data)
-print transp_bvecs_data
 transp_btbl_writer = csv.writer(transp_btbl, delimiter=' ', lineterminator='\n')
 transp_btbl_writer.writerows(transp_bvecs_data)
 
