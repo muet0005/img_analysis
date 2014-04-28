@@ -12,7 +12,7 @@ DIR=${HOME}/data/dti
 
 ####################-----------------######################
 #tell this code where to find the other shells/python code it needs
-shdir=/home/genr/software/bitbucket/lisa/tracula
+shdir=/home/genr/software/bitbucket/lisa/dti
 
 #which versions would you like to use?
 #these are the same as FSLDIR and FREESURFER_HOME
