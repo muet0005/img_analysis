@@ -7,6 +7,6 @@ subj = sys.argv[2]
 
 autoPtxLib = '/home/genr/software/autptx'
 
-kdit_aptx = kdti.knicrAutoPtx(dtiDir, subj, autoPtxLib)
+kdti_aptx = kdti.knicrAutoPtx(dtiDir, subj, autoPtxLib)
 kdti_aptx.autoPtx_1_preproc()
 kdti_aptx.autoPtx_2_launchTractography()
