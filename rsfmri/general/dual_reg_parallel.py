@@ -148,7 +148,8 @@ def generate_common_mask(inputs):
 def dr_stage1(i, **kwargs):
 	subj, mask = i
 	ics = os.path.join(OUTPUT, 'melodic_IC.nii.gz')
-	desnorm = True
+	desnorm = False
+	demean=True
 	for i in kwargs.keys():
 		if i == 'desnorm':
 			if kwargs[i]:
@@ -161,14 +162,10 @@ def dr_stage1(i, **kwargs):
 		print "cannot locate melodic component maps for dual regression...must exit.."
 		print "looked in: ", ics
 		sys.exit(0)
-	if desnorm:
-		opts_str = '--demean --des_norm'
-	else:
-		opst_str = '--demean'
 	iFile = os.path.join(os.path.dirname(INPUT), subj, feat_pfix + subj + feat_sfix, ff_data_name)
 	oFile = os.path.join(OUTPUT, 'stage1', 'dr_stage1_idc_' + subj + '.txt')
 	mask = os.path.join(OUTPUT, 'stage1', 'mask.nii.gz')
-	fsl_glm = fsl.GLM(in_file=iFile, design=ics, terminal_output='stream', out_file=oFile, mask=mask, options=opts_str, output_type='NIFTI_GZ')
+	fsl_glm = fsl.GLM(in_file=iFile, design=ics, terminal_output='stream', out_file=oFile, des_norm=desnorm, demean=demean, mask=mask, options=opts_str, output_type='NIFTI_GZ')
 	cmd_out = os.path.join(OUTPUT, 'stage1', 'stage1_fslglm_idc_' + subj + '.out')
 	write_cmd_out(fsl_glm.cmdline, cmd_out)
 	fsl_glm.run()
@@ -178,6 +175,7 @@ def dr_stage2(i, **kwargs):
 	subj, mask = i
 	regress_moco = True
 	desnorm = True
+	demean = True
 	for i in kwargs.keys():
 		if i == 'regress_moco':
 			if kwargs[i]:
@@ -206,11 +204,7 @@ def dr_stage2(i, **kwargs):
 	oFile = os.path.join(OUTPUT, 'stage2', 'dr_stage2_idc_' + subj + '.nii.gz')
 	ozFile = os.path.join(OUTPUT, 'stage2', 'dr_stage2_Z_idc_' + subj + '.nii.gz')
 	mask = os.path.join(OUTPUT, 'stage1', 'mask.nii.gz')
-	if desnorm:
-		opts_str = '--demean --des_norm'
-	else:
-		opst_str = '--demean'
-	fsl_glm = fsl.GLM(in_file=iFile, design=designFile, terminal_output='stream', out_file=oFile, mask=mask, options=opts_str, output_type='NIFTI_GZ')
+	fsl_glm = fsl.GLM(in_file=iFile, design=designFile, terminal_output='stream', out_file=oFile, out_z_name=ozFile, mask=mask, des_norm=desnorm, demean=demean, output_type='NIFTI_GZ')
 	cmd_out = os.path.join(OUTPUT, 'stage2', 'stage2_fslglm_idc_' + subj + '.out')
 	write_cmd_out(fsl_glm.cmdline, cmd_out)
 	fsl_glm.run()
