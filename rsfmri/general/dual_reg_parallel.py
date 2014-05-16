@@ -124,6 +124,8 @@ def generate_mask(subj, **kwargs):
 		print 'Please ensure that subject has the input file, or adjust the subject list to remove them.'
 		sys.exit(0)
 	oFile = os.path.join(OUTPUT, 'stage1', 'mask_idc_' + subj + '.nii.gz')
+	if os.path.exists(oFile):
+	    return
 	cmd_out = os.path.join(OUTPUT, 'stage1', 'stage1_masking_idc_' + subj + '.out')
 	fslmaths = fsl.ImageMaths(in_file=iFile, op_string= '-Tstd -bin', out_file=oFile, output_type='NIFTI_GZ', out_data_type='char')
 	write_cmd_out(fslmaths.cmdline, cmd_out)
@@ -164,8 +166,10 @@ def dr_stage1(i, **kwargs):
 		sys.exit(0)
 	iFile = os.path.join(os.path.dirname(INPUT), subj, feat_pfix + subj + feat_sfix, ff_data_name)
 	oFile = os.path.join(OUTPUT, 'stage1', 'dr_stage1_idc_' + subj + '.txt')
+	if os.path.exists(oFile):
+	    return
 	mask = os.path.join(OUTPUT, 'stage1', 'mask.nii.gz')
-	fsl_glm = fsl.GLM(in_file=iFile, design=ics, terminal_output='stream', out_file=oFile, des_norm=desnorm, demean=demean, mask=mask, options=opts_str, output_type='NIFTI_GZ')
+	fsl_glm = fsl.GLM(in_file=iFile, design=ics, terminal_output='stream', out_file=oFile, des_norm=desnorm, demean=demean, mask=mask, output_type='NIFTI_GZ')
 	cmd_out = os.path.join(OUTPUT, 'stage1', 'stage1_fslglm_idc_' + subj + '.out')
 	write_cmd_out(fsl_glm.cmdline, cmd_out)
 	fsl_glm.run()
@@ -203,6 +207,8 @@ def dr_stage2(i, **kwargs):
 	iFile = os.path.join(os.path.dirname(INPUT), subj, feat_pfix + subj + feat_sfix, ff_data_name)
 	oFile = os.path.join(OUTPUT, 'stage2', 'dr_stage2_idc_' + subj + '.nii.gz')
 	ozFile = os.path.join(OUTPUT, 'stage2', 'dr_stage2_Z_idc_' + subj + '.nii.gz')
+	if os.path.exists(oFile) and os.path.exists(ozFile):
+	    return
 	mask = os.path.join(OUTPUT, 'stage1', 'mask.nii.gz')
 	fsl_glm = fsl.GLM(in_file=iFile, design=designFile, terminal_output='stream', out_file=oFile, out_z_name=ozFile, mask=mask, des_norm=desnorm, demean=demean, output_type='NIFTI_GZ')
 	cmd_out = os.path.join(OUTPUT, 'stage2', 'stage2_fslglm_idc_' + subj + '.out')
@@ -210,6 +216,9 @@ def dr_stage2(i, **kwargs):
 	fsl_glm.run()
 	obname = os.path.join(OUTPUT, 'stage2', 'dr_stage2_idc_' + subj + '_ic')
 	fslsplit = fsl.Split(dimension='t', in_file=oFile, out_base_name=obname, terminal_output='stream', output_type='NIFTI_GZ')
+	fslsplit.run()
+	obname = os.path.join(OUTPUT, 'stage2', 'dr_stage2_idc_Z' + subj + '_ic')
+	fslsplit = fsl.Split(dimension='t', in_file=ozFile, out_base_name=obname, terminal_output='stream', output_type='NIFTI_GZ')
 	fslsplit.run()
 
 
