@@ -12,4 +12,4 @@ from .model import (MRISPreproc, GLMFit, OneSampleTTest, Binarize, Concatenate,
 from .utils import (SampleToSurface, SurfaceSmooth, SurfaceTransform, Surface2VolTransform, 
                     SurfaceSnapshots,ApplyMask, MRIsConvert, MRITessellate,
                     MRIMarchingCubes, SmoothTessellation, MakeAverageSubject,
-                    ExtractMainComponent, MRILabel2Label)
+                    ExtractMainComponent, MRILabel2Label, MRISAnatomicalStats)
