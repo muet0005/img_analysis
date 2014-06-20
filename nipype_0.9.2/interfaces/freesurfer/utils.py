@@ -1187,11 +1187,11 @@ class MRISAnatomicalStatsInputSpec(FSTraitedSpec):
     desc="use for both source and target")
     tablefile = File(exists=False, argstr="-f %s",
     desc="output label file")
-    subject = traits.String(mandatory=True, position=-3,
+    subject = traits.String(argstr='%s', mandatory=True, position=-3,
     desc='subject id')
-    hemi = traits.String(mandatory=True, position=-2,
+    hemi = traits.String(argstr='%s', mandatory=True, position=-2,
     desc='hemisphere, lh or rh')
-    surface = traits.String(mandatory=False, position=-1,
+    surface = traits.String(argstr='%s', mandatory=False, position=-1,
     desc='surface or volume')
 
 
