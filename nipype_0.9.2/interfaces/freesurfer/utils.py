@@ -1133,7 +1133,7 @@ class MRILabel2LabelInputSpec(FSTraitedSpec):
     desc="target subject")
     subject = File(exists=False, argstr="-s %s",
     desc="use for both source and target")
-    trglabel = File(exists=False, argstr="-trglabel %s",
+    trglabel = File(exists=False, argstr="--trglabel %s",
     desc="output label file")
     regmethod = File(exists=False, argstr="--regmethod %s",
     desc="registration method (surface or volume)")
