@@ -1154,16 +1154,93 @@ class MRILabel2LabelOutputSpec(TraitedSpec):
 class MRILabel2Label(FSCommand):
     """
     Uses Freesurfer's mris_convert to convert surface files to various formats
+    
+    Wrapped in by KNICR / RLM
 
     Example
     -------
 
     >>> import nipype.interfaces.freesurfer as fs
-    >>> mris = fs.MRILabel2Label()
+    >>> mris = fs.MRILabel2Label(srclabel='my_qdec_label', srcsubject='fsaverage', trgsubject='my_subject_id', trglabel='my_qdec_label_native', regmethod='surface', hemi='lh')
+    >>> mris.run()
     """
     _cmd = 'mri_label2label'
     input_spec = MRILabel2LabelInputSpec
     output_spec = MRILabel2LabelOutputSpec
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mris_anatomical_stats -l ${SUBJECTS_DIR}/${subject}/label/${label}.label -t ${hemi}.${tFile} -b -f ${SUBJECTS_DIR}/${subject}/stats/${label}.${statappend}stats ${subject} ${hemi}                      
+
+
+
+
+
+
+
+
+class MRISAnatomicalStatsInputSpec(FSTraitedSpec):
+    """
+    Uses Freesurfer's mri_label2label to map labels to different spaces
+    """
+    labelfile = File(exists=True, argstr="-l %s",
+    desc="input label file")
+    thicknessfile = File(exists=False, mandatory=False, argstr="-t %s",
+    desc="use specified file for computing thickness statistics")
+    annotationfile = File(exists=False, mandatory=False, argstr="-a %s",
+    desc="compute properties for each label in the annotation file.")
+    tabular = traits.Bool(argstr="-b",
+    desc="use for both source and target")
+    tablefile = File(exists=False, argstr="-f %s",
+    desc="output label file")
+    subject = traits.String(mandatory=True, position=-3,
+    desc='subject id')
+    hemi = traits.String(mandatory=True, position=-2,
+    desc='hemisphere, lh or rh')
+    surface = traits.String(mandatory=False, position=-1,
+    desc='surface or volume')
+
+
+
+
+class MRISAnatomicalStatsOutputSpec(TraitedSpec):
+    """
+    Uses Freesurfer's mris_anatomical stats to compute thickness stats within a label
+    """
+    statfile = File(exists=True, desc='label output file')
+
+
+
+class MRISAnatomicalStats(FSCommand):
+    """
+    Uses Freesurfer's mris_anatomical_stats to compute stats within a label
+
+    Wrapped in by KNICR / RLM
+
+    Example
+    -------
+    Nope.
+    """
+    _cmd = 'mris_anatomical_stats'
+    input_spec = MRISAnatomicalStatsInputSpec
+    output_spec = MRISAnatomicalStatsOutputSpec
+
+
+
+
+
+
 
 
 
