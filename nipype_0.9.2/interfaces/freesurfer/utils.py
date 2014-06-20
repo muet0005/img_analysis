@@ -1173,23 +1173,6 @@ class MRILabel2Label(FSCommand):
 
 
 
-
-
-
-
-
-
-
-
-mris_anatomical_stats -l ${SUBJECTS_DIR}/${subject}/label/${label}.label -t ${hemi}.${tFile} -b -f ${SUBJECTS_DIR}/${subject}/stats/${label}.${statappend}stats ${subject} ${hemi}                      
-
-
-
-
-
-
-
-
 class MRISAnatomicalStatsInputSpec(FSTraitedSpec):
     """
     Uses Freesurfer's mri_label2label to map labels to different spaces
