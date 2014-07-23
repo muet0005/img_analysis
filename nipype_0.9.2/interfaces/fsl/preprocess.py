@@ -1505,3 +1505,76 @@ class FIRST(FSLCommand):
             bvars.append(op.abspath(bvar))
             return bvars
         return None
+
+
+class FSLMotionOutliersInputSpec(FSLCommandInputSpec):
+    # We use position args here as list indices - so a negative number
+    # will put something on the end
+    in_file = File(exists=True,
+                    desc='input 4d image',
+                    argstr='-i %s', mandatory=True)
+    out_file = File(desc='output confound file',
+                    argstr='-o %s', mandatory=True)
+    metric_file = File(desc='save metric (DVARS) to this file',
+                    argstr='-s %s')
+    plot_file = File(desc='save metric (DVARS) as png file',
+                    argstr='-p %s')          
+    refrms = traits.Bool(desc='use RMS intensity difference to reference volume as metric [default metric]',
+                    argstr='--refrms')
+    refrms = traits.Bool(desc='use RMS intensity difference to reference volume as metric [default metric]',
+                    argstr='--refrms')
+    dvars = traits.Bool(desc='use use DVARS as metric',
+                    argstr='--dvars') 
+    refmse = traits.Bool(desc='MSE version of refrms (from orig vers. of fsl_motion_outliers)',
+                    argstr='--refmse')                         
+    fd = traits.Bool(desc='use FD framewise displacement as metric',
+                    argstr='--fd')                          
+    fdrms = traits.Bool(desc='use FD framewise displacement rms matrix as metric',
+                    argstr='--fdrms')                     
+    mask = traits.File(desc='use supplied mask image for calculating metric',
+                    argstr='-m %s')
+    nomoco = traits.Bool(desc='dont do moco...assumed already done',
+                    argstr='--nomoco')
+    dummy = traits.Int(desc='number of dummy scans to remove',
+                    argstr='--dummy=%d')
+    verbose = traits.Bool(desc='verbose',
+                    argstr='-v')
+
+
+
+class FSLMotionOutliersOutputSpec(TraitedSpec):
+    out_file = File(
+        desc="path/name coundfound output file")
+
+
+class FSLMotionOutliers(FSLCommand):
+    """Use fsl_motion_outliers command to make confound regression matrix for use in FEAT/glm
+
+    """
+
+    _cmd = 'fsl_motion_outliers'
+    input_spec = FSLMotionOutliersInputSpec
+    output_spec = FSLMotionOutliersOutputSpec
+
+    def _run_interface(self, runtime):
+        # The returncode is meaningless in BET.  So check the output
+        # in stderr and if it's set, then update the returncode
+        # accordingly.
+        runtime = super(FSLMotionOutliers, self)._run_interface(runtime)
+        if runtime.stderr:
+            self.raise_exception(runtime)
+        return runtime
+
+    def _gen_outfilename(self):
+        out_file = self.inputs.out_file
+        return os.path.abspath(out_file)
+
+    def _list_outputs(self):
+        outputs = self.output_spec().get()
+        outputs['out_file'] = self._gen_outfilename()
+        return outputs
+
+    def _gen_filename(self, name):
+        if name == 'out_file':
+            return self._gen_outfilename()
+        return None
