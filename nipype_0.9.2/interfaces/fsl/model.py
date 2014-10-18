@@ -1648,6 +1648,8 @@ class GLMInputSpec(FSLCommandInputSpec):
         exists=True,
         argstr='-c %s',
         desc='t-contrasts file')
+    demean = traits.Bool(desc='demean',
+                             argstr='--demean')
     options = traits.String(
         argstr='%s',
         desc = 'fsl_glm options')
