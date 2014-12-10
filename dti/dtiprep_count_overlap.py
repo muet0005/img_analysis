@@ -5,8 +5,8 @@ import csv as csv
 from collections import Counter
 
 #mysql table name
-tbl_in = 'dtiprep_qa_10may2014'
-tbl_out = 'dtiprep_qa_10may2014_overlap'
+tbl_in = 'dtiprep_qa_06dec2014'
+tbl_out = 'dtiprep_qa_06dec2014_overlap'
 #mysql database name
 mydb = 'dti'
 
@@ -16,7 +16,7 @@ con = mysqldb.connect(db = mydb, read_default_file=os.path.join(os.getenv("HOME"
 cursor = con.cursor()
 
 #tell the code which column is the id column in the db
-id_col = 'rnumber'
+id_col = 'idc'
 
 #select all of the subjects from the db
 cursor.execute("""select %s from %s""" % (id_col, tbl_in))
