@@ -13,6 +13,7 @@ parser = argparse.ArgumentParser(description='Run KNICR DTI processing pipeline'
 parser.add_argument("-s", "--subject", help="subject ID number", required=True, nargs=1)
 parser.add_argument("-d", "--dir", help="folder where input directories exist", required=True, nargs=1)
 parser.add_argument("-t", "--template", help="Standard space image to be used for registration. Usually 1mm FMRIB58", required=True, nargs=1)
+parser.add_argument("--dwi", help="the path to the dwi", required=True, nargs=1)
 parser.add_argument("-g", "--nDwis", help="Number of Diffusion Weighted Images expected (default is set to 38)", required=False, nargs=1)
 parser.add_argument("-v", "--voxelSize", help="desired size of voxels in mm (default is 2mm)", required=False, nargs=1)
 
@@ -25,6 +26,9 @@ subj = args.subject[0]
 dataDir = args.dir[0]
 #which standard space brain to register to?
 template_brain = args.template[0]
+#the dwi
+dwi = args.dwi[0]
+
 
 if args.nDwis:
     nDwis = args.nDwis[0]
@@ -51,6 +55,8 @@ elif not os.path.exists(dwi):
 def run_dti_preproc(dtiinfo):
     dataDir, subj, dwi = dtiinfo
     dwi_nii = nb.load(dwi)
+    bvecs = dwi.replace('.nii.gz', '.bvec')
+    print(bvecs)
     print dataDir
     print subj
     print dwi
@@ -76,7 +82,6 @@ def run_dti_preproc(dtiinfo):
     d.bet()
     #do the standard FSL eddy current correction
     d.ecc()
-    bvecs = dwi.replace('.nii.gz', '.bvec')
     #rotate the gradient table based on the above ecc parameters
     d.rot_bvecs(bvec=bvecs)
     #fit the tensor
