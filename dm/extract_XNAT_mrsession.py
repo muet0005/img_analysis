@@ -2,8 +2,8 @@ import os as os
 import csv as csv
 import copy as copy 
 
-xnatFile = open('/Users/rmuetzel/Desktop/GenR_F9_MRI_xnat_mrsession.csv', 'r')
-oFile = open('/Users/rmuetzel/Desktop/GenR_F9_MRI_xnat_mrsession_FORMATTED_23March2014.csv', 'w')
+xnatFile = open('/Users/rmuetzel/Desktop/xnat_dump_forRonald_new.csv', 'r')
+oFile = open('/Users/rmuetzel/Desktop/GenR_F9_MRI_xnat_mrsession_FORMATTED_30Nov2018_new.csv', 'w')
 
 print 'Reading in CSV file from XNAT: ', xnatFile
 csv_reader = csv.reader(xnatFile, delimiter=',')
@@ -21,6 +21,7 @@ print 'building sequence dictionary...'
 for line in xnat_mrsession_data:
 	if not line[0] == 'MR ID':
 		scans=line[5].split('  ')
+		print(line)
 		rm_ws = True
 		while rm_ws:
 			try:
